@@ -150,7 +150,7 @@
         <article class="panel review-card" aria-labelledby="documentTitle">
           <header class="document-head">
             <div><p class="type" id="documentType">Dokument</p><h1 class="title" id="documentTitle"></h1><p class="meta"><span id="author"></span><span class="dot" id="authorDot" aria-hidden="true">·</span><span class="site-name" id="siteName"></span><span class="dot optional-dot" id="dateDot" aria-hidden="true">·</span><span id="savedDate"></span></p></div>
-            <a class="open" id="openLink" href="#" target="_blank" rel="noreferrer" aria-label="Dokument in Reader öffnen" title="In Reader öffnen"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5M19 13v6H5V5h6"/></svg></a>
+            <a class="open" id="openLink" href="#" rel="noreferrer" aria-label="Dokument in Reader öffnen" title="In Reader öffnen"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5M19 13v6H5V5h6"/></svg></a>
           </header>
           <div class="document-body">
             <div>
@@ -217,13 +217,14 @@
           <button class="preset" type="button" data-query="progress__gt:3 AND minutes__gt:20 AND (in:inbox OR in:later OR in:shortlist)">Unfertige Longreads</button>
           <button class="preset" type="button" data-query="seen:false AND (in:later OR feed:true)">Digest-Pool*</button>
         </div>
-        <div class="dialog-actions"><button class="btn primary" id="saveQuery" type="button">Filter speichern &amp; neu laden</button></div><p class="status" id="queryStatus" role="alert"></p>
+        <div class="dialog-actions"><button class="btn primary" id="saveQuery" type="button">Einstellungen speichern &amp; neu laden</button></div><p class="status" id="queryStatus" role="alert"></p>
       </section>
       <section class="dialog-section">
         <div class="settings-grid">
           <div><label class="label" for="roundSize">Dokumente pro Runde</label><input class="number" id="roundSize" type="number" min="5" max="50" inputmode="numeric"></div>
           <div><label class="label" for="reviewShare">Mischung</label><select class="select" id="reviewShare"><option value="80">80 % fällig · 20 % neu</option><option value="60">60 % fällig · 40 % neu</option><option value="40">40 % fällig · 60 % neu</option><option value="20">20 % fällig · 80 % neu</option></select></div>
           <div><label class="label" for="dueDays">Standard-Intervall</label><select class="select" id="dueDays"><option value="0">heute</option><option value="1">morgen</option><option value="3">in 3 Tagen</option><option value="7">in 7 Tagen</option><option value="14">in 14 Tagen</option><option value="30">in 30 Tagen</option><option value="60">in 60 Tagen</option><option value="90">in 90 Tagen</option><option value="180">in 180 Tagen</option></select></div>
+          <div><label class="label" for="openMode">Dokumente öffnen</label><select class="select" id="openMode"><option value="auto">Automatisch</option><option value="app">Reader-App (Android)</option><option value="web">Webversion</option></select></div>
         </div>
         <p style="margin-top:9px">Die App mischt fällige <code>ir-active</code>-Dokumente mit neuen Dokumenten ohne jeden IR-Status. Fehlen Treffer in einem Topf, füllt der andere die freien Plätze auf.</p>
         <p style="margin-top:9px">Status, Termin, Priorität und Phase werden als austauschbare <code>ir-*</code>-Tags gespiegelt. Der ausführliche Zustand bleibt im geschützten IR-Block der Document-Note.</p>
@@ -258,7 +259,7 @@
         completed:{tag:'ir-completed',label:'Abgeschlossen'},
         dropped:{tag:'ir-dropped',label:'Verworfen'}
       };
-      var DEFAULT_SETTINGS={query:'in:later',roundSize:25,dueDays:3,reviewShare:60};
+      var DEFAULT_SETTINGS={query:'in:later',roundSize:25,dueDays:3,reviewShare:60,openMode:'auto'};
       var busy=false;
       var lastListRequestAt=0;
       var settingsData=loadJson(SETTINGS_KEY,DEFAULT_SETTINGS);
@@ -285,6 +286,7 @@
         settingsData.roundSize=clampInt(settingsData.roundSize,5,50,DEFAULT_SETTINGS.roundSize);
         settingsData.dueDays=DUE_OPTIONS.indexOf(Number(settingsData.dueDays))!==-1?Number(settingsData.dueDays):DEFAULT_SETTINGS.dueDays;
         settingsData.reviewShare=[20,40,60,80].indexOf(Number(settingsData.reviewShare))!==-1?Number(settingsData.reviewShare):DEFAULT_SETTINGS.reviewShare;
+        settingsData.openMode=['auto','app','web'].indexOf(String(settingsData.openMode))!==-1?String(settingsData.openMode):DEFAULT_SETTINGS.openMode;
       }
       function normalizeState(){
         if(Number(S.version)!==2){S=defaultState();return;}
@@ -307,7 +309,7 @@
       function saveSettings(){normalizeSettings();saveJson(SETTINGS_KEY,settingsData);}
       function saveState(){saveJson(STATE_KEY,S);}
       function cacheElements(){
-        ['progress','progressCount','progressTrack','progressBar','reload','settings','setupScreen','setupForm','tokenInput','queryInput','connect','setupStatus','loadingScreen','loadingCopy','reviewScreen','documentType','documentTitle','author','authorDot','siteName','dateDot','savedDate','openLink','summary','notePreview','location','readingTime','readingProgress','wordCount','documentTags','irKind','irDueCopy','decisionTitle','itemDueDays','itemPriority','itemPhase','activeDecisionLabel','activeDecisionHelp','decisionGrid','skip','emptyScreen','emptyTitle','emptyCopy','nextRound','emptyReload','emptySettings','errorScreen','errorCopy','retry','errorSettings','toasts','settingsDialog','closeSettings','settingsQuery','saveQuery','queryStatus','roundSize','reviewShare','dueDays','settingsToken','saveToken','settingsStatus','cacheSummary','clearQueue','disconnect'].forEach(function(id){E[id]=document.getElementById(id);});
+        ['progress','progressCount','progressTrack','progressBar','reload','settings','setupScreen','setupForm','tokenInput','queryInput','connect','setupStatus','loadingScreen','loadingCopy','reviewScreen','documentType','documentTitle','author','authorDot','siteName','dateDot','savedDate','openLink','summary','notePreview','location','readingTime','readingProgress','wordCount','documentTags','irKind','irDueCopy','decisionTitle','itemDueDays','itemPriority','itemPhase','activeDecisionLabel','activeDecisionHelp','decisionGrid','skip','emptyScreen','emptyTitle','emptyCopy','nextRound','emptyReload','emptySettings','errorScreen','errorCopy','retry','errorSettings','toasts','settingsDialog','closeSettings','settingsQuery','saveQuery','queryStatus','roundSize','reviewShare','dueDays','openMode','settingsToken','saveToken','settingsStatus','cacheSummary','clearQueue','disconnect'].forEach(function(id){E[id]=document.getElementById(id);});
       }
       function screen(name){
         ['setupScreen','loadingScreen','reviewScreen','emptyScreen','errorScreen'].forEach(function(id){E[id].classList.toggle('active',id===name);});
@@ -459,6 +461,45 @@
       function lower(value){return String(value===null||value===undefined?'':value).trim().toLowerCase();}
       function locationValue(value){var v=lower(value);return v==='inbox'?'new':v;}
       function domainOf(url){try{return new URL(String(url||'')).hostname.replace(/^www\./,'').toLowerCase();}catch(error){return'';}}
+      function isAndroidDevice(){
+        var platform=navigator.userAgentData&&navigator.userAgentData.platform||'';
+        return /android/i.test(String(platform))||/android/i.test(String(navigator.userAgent||''));
+      }
+      function isCompactView(){
+        return window.matchMedia?window.matchMedia('(max-width: 820px)').matches:window.innerWidth<=820;
+      }
+      function shouldUseReaderApp(){
+        if(settingsData.openMode==='web')return false;
+        if(settingsData.openMode==='app')return isAndroidDevice();
+        return isAndroidDevice()&&isCompactView();
+      }
+      function readerWebUrl(doc){
+        if(doc&&doc.url)return String(doc.url);
+        if(doc&&doc.id)return'https://read.readwise.io/read/'+encodeURIComponent(String(doc.id));
+        return doc&&doc.source_url?String(doc.source_url):'';
+      }
+      function isReaderWebUrl(value){
+        try{
+          var host=new URL(String(value||'')).hostname.toLowerCase();
+          return host==='read.readwise.io'||host==='readwise.io'||host==='www.readwise.io';
+        }catch(error){return false;}
+      }
+      function androidReaderIntent(value){
+        try{
+          var url=new URL(String(value||''));
+          if(!isReaderWebUrl(url.href))return value;
+          var route=url.host+url.pathname+url.search;
+          var store='https://play.google.com/store/apps/details?id=com.readermobile';
+          return'intent://'+route+'#Intent;scheme=https;package=com.readermobile;S.browser_fallback_url='+encodeURIComponent(store)+';end';
+        }catch(error){return value;}
+      }
+      function configureOpenLink(doc){
+        var webUrl=readerWebUrl(doc),useIntent=shouldUseReaderApp()&&isReaderWebUrl(webUrl);
+        E.openLink.hidden=!webUrl;
+        if(!webUrl)return;
+        E.openLink.href=useIntent?androidReaderIntent(webUrl):webUrl;
+        if(useIntent)E.openLink.removeAttribute('target');else E.openLink.target='_blank';
+      }
       function boolValue(value){
         var v=lower(value);
         if(v==='true')return true;if(v==='false')return false;
@@ -857,7 +898,7 @@
         E.location.textContent=locationLabel(item.location);E.readingTime.textContent=item.reading_time||item.listening_time||'—';
         E.readingProgress.textContent=Math.round((Number(item.reading_progress)||0)*100)+' %';E.wordCount.textContent=item.word_count?formatNumber(item.word_count):'—';
         E.notePreview.hidden=!item.notes;E.notePreview.textContent=item.notes?'Document-Note vorhanden – sie bleibt beim Statuswechsel erhalten.':'';
-        renderTags(item);var link=item.url||item.source_url;E.openLink.hidden=!link;if(link)E.openLink.href=link;
+        renderTags(item);configureOpenLink(item);
         screen('reviewScreen');document.title=(item.title||'Dokument')+' · IR Inbox';
       }
       function showError(message){E.errorCopy.textContent=message;screen('errorScreen');}
@@ -876,14 +917,14 @@
         catch(error){localStorage.removeItem(TOKEN_KEY);E.setupStatus.textContent=error&&error.message?error.message:'Der Token konnte nicht geprüft werden.';E.connect.textContent='Verbinden & Runde laden';setBusy(false);screen('setupScreen');E.tokenInput.focus();}
       }
       function openSettings(){
-        E.settingsQuery.value=settingsData.query;E.roundSize.value=String(settingsData.roundSize);E.reviewShare.value=String(settingsData.reviewShare);E.dueDays.value=String(settingsData.dueDays);E.settingsToken.value=token();
+        E.settingsQuery.value=settingsData.query;E.roundSize.value=String(settingsData.roundSize);E.reviewShare.value=String(settingsData.reviewShare);E.dueDays.value=String(settingsData.dueDays);E.openMode.value=settingsData.openMode;E.settingsToken.value=token();
         E.queryStatus.textContent='';E.settingsStatus.textContent='';E.settingsDialog.showModal();
       }
       function closeSettings(){E.settingsDialog.close();}
       async function applyQuery(){
         var query=E.settingsQuery.value.trim(),size=clampInt(E.roundSize.value,5,50,settingsData.roundSize);
         try{parseQuery(query);}catch(error){E.queryStatus.textContent=error.message;E.settingsQuery.focus();return;}
-        settingsData.query=query;settingsData.roundSize=size;settingsData.reviewShare=Number(E.reviewShare.value);settingsData.dueDays=Number(E.dueDays.value);saveSettings();closeSettings();await loadFresh();
+        settingsData.query=query;settingsData.roundSize=size;settingsData.reviewShare=Number(E.reviewShare.value);settingsData.dueDays=Number(E.dueDays.value);settingsData.openMode=E.openMode.value;saveSettings();closeSettings();await loadFresh();
       }
       async function saveToken(){
         if(busy)return;var value=E.settingsToken.value.trim(),old=token();
@@ -908,7 +949,7 @@
         if(event.key==='1'||event.key==='2'||event.key==='3'||event.key==='0'){
           event.preventDefault();decide(event.key==='1'?'active':event.key==='2'?'paused':event.key==='3'?'completed':'dropped');
         }else if(event.key==='ArrowRight'){event.preventDefault();defer();}
-        else if(event.key.toLowerCase()==='o'&&!E.openLink.hidden){event.preventDefault();window.open(E.openLink.href,'_blank','noopener');}
+        else if(event.key.toLowerCase()==='o'&&!E.openLink.hidden){event.preventDefault();E.openLink.click();}
       }
       function bind(){
         E.setupForm.addEventListener('submit',connect);E.reload.addEventListener('click',loadFresh);E.nextRound.addEventListener('click',nextRound);E.emptyReload.addEventListener('click',loadFresh);E.retry.addEventListener('click',loadFresh);
@@ -932,7 +973,8 @@
       window.ReadwiseIRInboxCore={
         tokenizeQuery:tokenizeQuery,parseQuery:parseQuery,evaluateQuery:evaluateQuery,deriveServerParams:deriveServerParams,
         tagNames:tagNames,irMetadata:irMetadata,dueDescription:dueDescription,mixQueue:mixQueue,
-        mergeIrBlock:mergeIrBlock,mergedTags:mergedTags,cleanDocument:cleanDocument,categoryLabel:categoryLabel
+        mergeIrBlock:mergeIrBlock,mergedTags:mergedTags,cleanDocument:cleanDocument,categoryLabel:categoryLabel,
+        readerWebUrl:readerWebUrl,isReaderWebUrl:isReaderWebUrl,androidReaderIntent:androidReaderIntent,shouldUseReaderApp:shouldUseReaderApp
       };
       init();
       if('serviceWorker' in navigator&&/^https?:$/.test(window.location.protocol)){
