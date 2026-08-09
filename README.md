@@ -43,6 +43,14 @@ Alte `ir-active`-Dokumente ohne `ir-due-*` werden über das Wiedervorlagedatum i
 
 Nach einem Update lädt der Service Worker die App-Shell grundsätzlich netzwerkbasiert und verwendet den Cache nur als Offline-Rückfall. Falls ein Browser dennoch einen sehr alten Stand hält: installierte App schließen, Seite neu laden und notfalls die Websitedaten beziehungsweise den Service Worker der Pages-Adresse entfernen.
 
+## Dokument in Reader öffnen
+
+- Im Modus **Automatisch** verwendet eine schmale Android-Ansicht einen direkten Intent für die installierte App **Readwise Reader** (`com.readermobile`). Dadurch wird nicht zuerst die Web-App auf `read.readwise.io` geladen. Auf PCs und in einer breiten Desktop-Ansicht öffnet sich stattdessen die Webversion in einem neuen Tab.
+- Unter **Einstellungen → Dokumente öffnen** kann jedes Gerät diese Erkennung lokal mit **Reader-App (Android)** oder **Webversion** überschreiben.
+- Ist Reader auf Android nicht installiert, führt der Ersatzweg zur offiziellen Play-Store-Seite und nicht zum Web-Reader.
+- Je nach Browser oder Android-Einstellung kann beim ersten Öffnen weiterhin eine Sicherheitsabfrage erscheinen. Unter **Einstellungen → Apps → Reader → Standardmäßig öffnen** sollte **Unterstützte Links öffnen** aktiviert sein.
+- Auf anderen Betriebssystemen öffnet der Button weiterhin die von der Reader-API gelieferte Webadresse.
+
 ## Sicherheit
 
 - Der Readwise Access Token wird ausschließlich im lokalen Browser-Speicher der jeweiligen GitHub-Pages-Adresse abgelegt.
