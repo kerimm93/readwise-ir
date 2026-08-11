@@ -1,4 +1,4 @@
-const CACHE_NAME = "readwise-ir-inbox-v4-20260809";
+const CACHE_NAME = "readwise-ir-inbox-v8-lease-fallback-20260811";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -31,15 +31,22 @@ self.addEventListener("fetch", event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  if (request.mode === "navigate") {
+    event.respondWith(
+      caches.match("./index.html")
+        .then(cached => cached || fetch(request))
+    );
+    return;
+  }
+
   event.respondWith(
-    fetch(request)
-      .then(response => {
+    caches.match(request)
+      .then(cached => cached || fetch(request).then(response => {
         if (response.ok) {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
         }
         return response;
-      })
-      .catch(() => caches.match(request).then(cached => cached || caches.match("./index.html")))
+      }))
   );
 });

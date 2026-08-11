@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Readwise IR Inbox",
   "short_name": "IR Inbox",
-  "description": "Gemischte Incremental-Reading-Sitzungen mit fälligen und neuen Readwise-Reader-Dokumenten.",
+  "description": "Offline-Queues für Incremental Reading bearbeiten und bewusst mit Readwise abgleichen.",
   "lang": "de",
   "start_url": "./",
   "scope": "./",
