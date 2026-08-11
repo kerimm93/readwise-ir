@@ -19,7 +19,7 @@ Standardmäßig werden 60 % Wiedervorlagen und 40 % Neuaufnahmen angestrebt. Feh
 4. **Mit Readwise abgleichen** prüft jedes betroffene Dokument frisch und überträgt die vorgemerkten Änderungen einzeln.
 5. Fehlgeschlagene oder konfliktbehaftete Änderungen bleiben mit Fehlermeldung im lokalen Ausgang. Ein neuer Queue-Snapshot wird erst zugelassen, wenn dieser Ausgang leer ist.
 
-Ein Konflikt kann erneut geprüft oder nach ausdrücklicher Bestätigung lokal verworfen werden. Beim Verwerfen bleibt der aktuelle Readwise-Stand unangetastet.
+Ein Konflikt oder dauerhaft fehlgeschlagener Sync-Eintrag kann erneut geprüft oder nach ausdrücklicher Bestätigung lokal verworfen werden. Beim Verwerfen bleibt der aktuelle Readwise-Stand unangetastet.
 
 Das absolute Fälligkeitsdatum wird beim Entscheiden festgelegt. Eine offline gewählte Wiedervorlage „in 7 Tagen“ verschiebt sich daher nicht, wenn der Abgleich erst später stattfindet.
 
@@ -77,6 +77,7 @@ Nach einem Update lädt der Service Worker die App-Shell grundsätzlich netzwerk
 - Der Readwise Access Token wird ausschließlich im lokalen Browser-Speicher der jeweiligen GitHub-Pages-Adresse abgelegt.
 - Der Token gehört niemals in `index.html`, GitHub Actions, das Repository oder den Service Worker.
 - Queue, Dokument-Snapshots und ausstehende Änderungen werden in IndexedDB gespeichert und zusätzlich im Browser-Speicher gespiegelt.
+- Schreibvorgänge mehrerer gleichzeitig geöffneter Tabs oder PWA-Fenster werden geräteweit serialisiert; andere offene Ansichten übernehmen den neuesten lokalen Stand automatisch.
 - Das Entfernen des Tokens oder das Verwerfen einer offenen Queue löscht keine noch nicht synchronisierten Entscheidungen.
 - Unmittelbar vor jedem API-Schreibvorgang lädt die App das konkrete Dokument frisch. Änderungen am selben IR-Block oder an IR-Tags werden als Konflikt markiert und nicht still überschrieben.
 - Änderungen an fremdem Notiztext und thematischen Tags werden beim Abgleich erhalten.

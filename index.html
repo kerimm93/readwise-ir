@@ -276,6 +276,9 @@
       var STATE_KEY='readwise_ir_inbox.state.v1';
       var DB_NAME='readwise_ir_inbox.offline.v1';
       var DB_STORE='state';
+      var STATE_LOCK_NAME='readwise_ir_inbox.state.lock.v1';
+      var STATE_LOCK_KEY='readwise_ir_inbox.state.lease.v1';
+      var STATE_CHANNEL_NAME='readwise_ir_inbox.state.channel.v1';
       var IR_NAMES=['ir-active','ir-paused','ir-completed','ir-dropped'];
       var DUE_TAG=/^ir-due-(\d{4}-\d{2}-\d{2})$/i;
       var PRIORITY_TAG=/^ir-priority-([1-5])$/i;
@@ -297,6 +300,10 @@
       var toastTimer=null;
       var stateDbPromise=null;
       var persistChain=Promise.resolve();
+      var stateTransactionDepth=0;
+      var externalRefreshPending=false;
+      var contextId='C'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
+      var stateChannel=typeof window.BroadcastChannel==='function'?new window.BroadcastChannel(STATE_CHANNEL_NAME):null;
 
       function defaultState(){return{version:3,revision:0,queue:[],dueReserve:[],newReserve:[],outbox:[],sessionTotal:0,deferred:0,lastLoadedAt:'',lastSyncAt:'',lastSyncSummary:'',dueCursor:null,newCursor:null,dueHasMore:true,newHasMore:true,query:'',serverParams:{},modifiedAt:''};}
       function clone(value){return JSON.parse(JSON.stringify(value));}
@@ -337,6 +344,55 @@
           catch(error){reject(error);}
         });
       }
+      function snapshotIsNewer(candidate,current){
+        if(!candidate||typeof candidate!=='object')return false;
+        if(!current||typeof current!=='object')return true;
+        var candidateRevision=Number(candidate.revision)||0,currentRevision=Number(current.revision)||0;
+        if(candidateRevision!==currentRevision)return candidateRevision>currentRevision;
+        return(Date.parse(candidate.modifiedAt||'')||0)>(Date.parse(current.modifiedAt||'')||0);
+      }
+      async function latestStoredState(){
+        var local=loadJson(STATE_KEY,defaultState()),durable=await readDurableState();
+        return durable&&snapshotIsNewer(durable,local)?durable:local;
+      }
+      function readLease(){
+        try{return JSON.parse(localStorage.getItem(STATE_LOCK_KEY)||'null');}catch(error){return null;}
+      }
+      async function withLeaseLock(task){
+        var lockToken=contextId+'-'+Math.random().toString(36).slice(2),deadline=Date.now()+15000;
+        while(Date.now()<deadline){
+          var lease=readLease();
+          if(!lease||Number(lease.expiresAt)<Date.now()||lease.owner===contextId){
+            var proposed={owner:contextId,token:lockToken,expiresAt:Date.now()+120000};
+            localStorage.setItem(STATE_LOCK_KEY,JSON.stringify(proposed));
+            await sleep(20+Math.floor(Math.random()*30));
+            var verified=readLease();
+            if(verified&&verified.token===lockToken){
+              var renewal=window.setInterval(function(){
+                var current=readLease();
+                if(current&&current.token===lockToken)localStorage.setItem(STATE_LOCK_KEY,JSON.stringify({owner:contextId,token:lockToken,expiresAt:Date.now()+120000}));
+              },30000);
+              try{return await task();}
+              finally{
+                window.clearInterval(renewal);var current=readLease();
+                if(current&&current.token===lockToken)localStorage.removeItem(STATE_LOCK_KEY);
+              }
+            }
+          }
+          await sleep(40+Math.floor(Math.random()*80));
+        }
+        throw new Error('Der lokale App-Stand wird gerade in einem anderen Fenster bearbeitet. Bitte versuche es gleich erneut.');
+      }
+      function withStateLock(task){
+        if(navigator.locks&&typeof navigator.locks.request==='function')return navigator.locks.request(STATE_LOCK_NAME,{mode:'exclusive'},task);
+        return withLeaseLock(task);
+      }
+      async function stateTransaction(task){
+        return withStateLock(async function(){
+          S=await latestStoredState();normalizeState();stateTransactionDepth+=1;
+          try{return await task();}finally{stateTransactionDepth-=1;}
+        });
+      }
       function normalizeSettings(){
         settingsData.query=String(settingsData.query||DEFAULT_SETTINGS.query).trim();
         settingsData.queueName=String(settingsData.queueName||DEFAULT_SETTINGS.queueName).replace(/[\r\n]+/g,' ').trim().slice(0,60)||DEFAULT_SETTINGS.queueName;
@@ -374,8 +430,23 @@
       function saveState(){
         S.revision=(Number(S.revision)||0)+1;S.modifiedAt=new Date().toISOString();var snapshot=clone(S),localSaved=saveJson(STATE_KEY,snapshot);
         persistChain=persistChain.then(function(){return writeDurableState(snapshot);}).catch(function(){return false;});
-        return persistChain.then(function(dbSaved){if(!localSaved&&!dbSaved)throw new Error('Die lokale Entscheidung konnte nicht dauerhaft gespeichert werden.');return true;});
+        return persistChain.then(function(dbSaved){
+          if(!localSaved&&!dbSaved)throw new Error('Die lokale Entscheidung konnte nicht dauerhaft gespeichert werden.');
+          if(stateChannel)stateChannel.postMessage({type:'state-changed',source:contextId,revision:snapshot.revision,modifiedAt:snapshot.modifiedAt});
+          return true;
+        });
       }
+      async function refreshExternalState(){
+        if(busy||stateTransactionDepth>0){externalRefreshPending=true;return;}
+        externalRefreshPending=false;
+        try{
+          await withStateLock(async function(){
+            var latest=await latestStoredState();
+            if(snapshotIsNewer(latest,S)){S=latest;normalizeState();render();cacheSummary();renderSyncDialog();}
+          });
+        }catch(error){externalRefreshPending=true;}
+      }
+      function scheduleExternalRefresh(){window.setTimeout(refreshExternalState,0);}
       function cacheElements(){
         ['progress','progressCount','progressTrack','progressBar','reload','syncButton','syncBadge','settings','syncStrip','networkDot','networkCopy','pendingCopy','queueNameCopy','syncStripButton','setupScreen','setupForm','tokenInput','queryInput','connect','setupStatus','loadingScreen','loadingTitle','loadingCopy','reviewScreen','documentType','documentTitle','author','authorDot','siteName','dateDot','savedDate','openLink','summary','notePreview','location','readingTime','readingProgress','wordCount','documentTags','irKind','irDueCopy','decisionTitle','itemDueDays','itemPriority','itemPhase','activeDecisionLabel','activeDecisionHelp','decisionGrid','skip','emptyScreen','emptyTitle','emptyCopy','nextRound','emptyReload','emptySettings','errorScreen','errorCopy','retry','errorSettings','toasts','settingsDialog','closeSettings','queueName','settingsQuery','saveQuery','queryStatus','roundSize','reviewShare','dueDays','openMode','settingsToken','saveToken','settingsStatus','cacheSummary','openSync','clearQueue','disconnect','syncDialog','closeSync','closeSyncBottom','syncPendingCount','syncConflictCount','syncLastTime','syncExplanation','syncList','runSync','syncStatus'].forEach(function(id){E[id]=document.getElementById(id);});
       }
@@ -388,6 +459,7 @@
         busy=value;
         [E.connect,E.reload,E.syncButton,E.syncStripButton,E.runSync,E.nextRound,E.emptyReload,E.retry,E.saveQuery,E.saveToken,E.skip,E.itemDueDays,E.itemPriority,E.itemPhase].forEach(function(node){if(node)node.disabled=value;});
         Array.prototype.forEach.call(E.decisionGrid.querySelectorAll('button'),function(node){node.disabled=value;});
+        if(!value&&externalRefreshPending)scheduleExternalRefresh();
       }
       function reveal(button){
         var input=document.getElementById(button.getAttribute('data-reveal'));
@@ -431,7 +503,7 @@
           meta.textContent=label+(item.target&&item.target.status==='active'&&item.target.plan&&item.target.plan.dueDate?' · fällig '+item.target.plan.dueDate:'')+(item.lastError?' · '+item.lastError:'');
           state.className='sync-state '+(item.syncState||'pending');state.textContent=item.syncState==='conflict'?'Konflikt':item.syncState==='error'?'Fehler':item.syncState==='syncing'?'läuft':'wartet';
           side.className='sync-item-side';side.appendChild(state);
-          if(item.syncState==='conflict'){
+          if(item.syncState==='conflict'||item.syncState==='error'){
             var discard=document.createElement('button');discard.type='button';discard.className='discard-change';discard.setAttribute('data-discard-operation',item.operationId);discard.textContent='lokale Änderung verwerfen';side.appendChild(discard);
           }
           body.appendChild(title);body.appendChild(meta);li.appendChild(body);li.appendChild(side);E.syncList.appendChild(li);
@@ -443,9 +515,15 @@
       function openSyncDialog(){if(E.settingsDialog.open)E.settingsDialog.close();renderSyncDialog();if(!E.syncDialog.open)E.syncDialog.showModal();}
       function closeSyncDialog(){if(E.syncDialog.open)E.syncDialog.close();}
       async function discardPendingOperation(operationId){
-        var index=S.outbox.findIndex(function(item){return item.operationId===operationId;});if(index<0)return;
-        var item=S.outbox[index];if(!window.confirm('Die lokale Änderung für „'+item.title+'“ verwerfen und den aktuellen Readwise-Stand behalten?'))return;
-        S.outbox.splice(index,1);S.lastSyncSummary='Eine konfliktbehaftete lokale Änderung wurde bewusst verworfen.';await saveState();render();renderSyncDialog();toast('Lokale Änderung verworfen. Der Readwise-Stand blieb unverändert.','info');
+        var visible=S.outbox.find(function(item){return item.operationId===operationId;});if(!visible)return;
+        if(!window.confirm('Die lokale Änderung für „'+visible.title+'“ dauerhaft verwerfen und den aktuellen Readwise-Stand behalten? Dieser Schritt kann nicht rückgängig gemacht werden.'))return;
+        var removed=false;
+        await stateTransaction(async function(){
+          var index=S.outbox.findIndex(function(item){return item.operationId===operationId;});if(index<0)return;
+          S.outbox.splice(index,1);S.lastSyncSummary='Eine lokale Änderung wurde nach Bestätigung dauerhaft verworfen.';await saveState();removed=true;
+        });
+        render();renderSyncDialog();
+        if(removed)toast('Lokale Änderung dauerhaft verworfen. Der Readwise-Stand blieb unverändert.','info');
       }
       function updateNetworkState(){renderSyncChrome();renderSyncDialog();if(!isOnline()&&S.outbox.length)toast('Offline: '+S.outbox.length+' lokale Änderung'+(S.outbox.length===1?' bleibt':'en bleiben')+' sicher vorgemerkt.','info');}
       function apiMessage(response,body){
@@ -811,29 +889,36 @@
       }
       async function loadRound(reset){
         if(busy)return;
-        if(S.outbox.length){openSyncDialog();toast('Vor einer neuen Queue müssen die lokalen Entscheidungen erst abgeglichen werden.','info');return;}
         if(!isOnline()){toast('Offline: Die vorhandene Queue bleibt vollständig erhalten. Eine neue Queue benötigt Readwise.','info');return;}
-        var previous=clone(S);
+        var blocked=false,loadedDue=0,loadedNew=0;
         setBusy(true);screen('loadingScreen');
         E.loadingTitle.textContent='Offline-Queue wird zusammengestellt';
         try{
-          var query=String(settingsData.query||'').trim(),tree=parseQuery(query);
-          if(reset||S.query!==query){
-            var freshState=defaultState();freshState.lastSyncAt=previous.lastSyncAt;freshState.lastSyncSummary=previous.lastSyncSummary;S=freshState;S.query=query;S.serverParams=deriveServerParams(tree);
-          }
-          var target=settingsData.roundSize,dueTarget=Math.round(target*settingsData.reviewShare/100),newTarget=target-dueTarget;
-          await fillPool('due',dueTarget,tree,4);
-          await fillPool('new',newTarget,tree,2);
-          var dueCount=Math.min(dueTarget,S.dueReserve.length),newCount=Math.min(newTarget,S.newReserve.length);
-          var missing=target-dueCount-newCount;
-          if(missing>0&&S.dueReserve.length-dueCount>0){var extraDue=Math.min(missing,S.dueReserve.length-dueCount);dueCount+=extraDue;missing-=extraDue;}
-          if(missing>0&&S.newReserve.length-newCount>0){var extraNew=Math.min(missing,S.newReserve.length-newCount);newCount+=extraNew;missing-=extraNew;}
-          if(missing>0&&S.newHasMore){await fillPool('new',newCount+missing,tree,2);newCount=Math.min(newCount+missing,S.newReserve.length);missing=target-dueCount-newCount;}
-          if(missing>0&&S.dueHasMore){await fillPool('due',dueCount+missing,tree,4);dueCount=Math.min(dueCount+missing,S.dueReserve.length);}
-          var dueItems=S.dueReserve.splice(0,dueCount),newItems=S.newReserve.splice(0,Math.min(newCount,target-dueItems.length));
-          S.queue=mixQueue(dueItems,newItems);S.sessionTotal=S.queue.length;S.deferred=0;S.lastLoadedAt=new Date().toISOString();await saveState();render();
-          if(S.queue.length)toast('Offline-Queue gespeichert: '+dueItems.length+' fällig · '+newItems.length+' neu.','info');
-        }catch(error){S=previous;await saveState();render();toast((error&&error.message?error.message:'Die Reader-Auswahl konnte nicht geladen werden.')+' Die vorhandene Queue bleibt erhalten.','error');}
+          await stateTransaction(async function(){
+            if(S.outbox.length){blocked=true;return;}
+            var previous=clone(S);
+            try{
+              var query=String(settingsData.query||'').trim(),tree=parseQuery(query);
+              if(reset||S.query!==query){
+                var freshState=defaultState();freshState.lastSyncAt=previous.lastSyncAt;freshState.lastSyncSummary=previous.lastSyncSummary;S=freshState;S.query=query;S.serverParams=deriveServerParams(tree);
+              }
+              var target=settingsData.roundSize,dueTarget=Math.round(target*settingsData.reviewShare/100),newTarget=target-dueTarget;
+              await fillPool('due',dueTarget,tree,4);
+              await fillPool('new',newTarget,tree,2);
+              var dueCount=Math.min(dueTarget,S.dueReserve.length),newCount=Math.min(newTarget,S.newReserve.length);
+              var missing=target-dueCount-newCount;
+              if(missing>0&&S.dueReserve.length-dueCount>0){var extraDue=Math.min(missing,S.dueReserve.length-dueCount);dueCount+=extraDue;missing-=extraDue;}
+              if(missing>0&&S.newReserve.length-newCount>0){var extraNew=Math.min(missing,S.newReserve.length-newCount);newCount+=extraNew;missing-=extraNew;}
+              if(missing>0&&S.newHasMore){await fillPool('new',newCount+missing,tree,2);newCount=Math.min(newCount+missing,S.newReserve.length);missing=target-dueCount-newCount;}
+              if(missing>0&&S.dueHasMore){await fillPool('due',dueCount+missing,tree,4);dueCount=Math.min(dueCount+missing,S.dueReserve.length);}
+              var dueItems=S.dueReserve.splice(0,dueCount),newItems=S.newReserve.splice(0,Math.min(newCount,target-dueItems.length));
+              loadedDue=dueItems.length;loadedNew=newItems.length;S.queue=mixQueue(dueItems,newItems);S.sessionTotal=S.queue.length;S.deferred=0;S.lastLoadedAt=new Date().toISOString();await saveState();
+            }catch(error){S=previous;await saveState();throw error;}
+          });
+          render();
+          if(blocked){openSyncDialog();toast('Vor einer neuen Queue müssen die lokalen Entscheidungen erst abgeglichen oder bewusst verworfen werden.','info');return;}
+          if(S.queue.length)toast('Offline-Queue gespeichert: '+loadedDue+' fällig · '+loadedNew+' neu.','info');
+        }catch(error){render();toast((error&&error.message?error.message:'Die Reader-Auswahl konnte nicht geladen werden.')+' Die vorhandene Queue bleibt erhalten.','error');}
         finally{setBusy(false);}
       }
       function loadFresh(){return loadRound(true);}
@@ -960,18 +1045,24 @@
       function targetAlreadyApplied(fresh,operation){return irBlock(fresh.notes)===(operation.target.irBlock||'')&&irFamilySignature(fresh)===(operation.target.familySignature||'');}
       async function decide(status){
         if(busy||!S.queue.length||!STATUS[status])return;
-        var item=S.queue[0];
+        var item=S.queue[0],selectedId=item.id;
         if(status==='dropped'){
           var confirmed=window.confirm('„'+item.title+'“ wirklich als ir-dropped markieren? Das Dokument wird nicht gelöscht, aber bewusst aus dem IR-Bestand verworfen.');
           if(!confirmed)return;
         }
         setBusy(true);
         try{
-          var plan=currentPlan(),operation=createPendingOperation(item,status,plan),before=clone(S);
-          S.outbox.push(operation);S.queue.shift();
-          try{await saveState();}catch(storageError){S=before;throw storageError;}
+          var plan=currentPlan(),stored=false;
+          await stateTransaction(async function(){
+            var index=S.queue.findIndex(function(candidate){return candidate.id===selectedId;});
+            if(index<0)return;
+            var latestItem=S.queue[index],operation=createPendingOperation(latestItem,status,plan),before=clone(S);
+            S.outbox.push(operation);S.queue.splice(index,1);
+            try{await saveState();stored=true;}catch(storageError){S=before;throw storageError;}
+          });
           render();window.scrollTo({top:0,behavior:'auto'});
-          toast('Lokal gespeichert · '+S.outbox.length+' Änderung'+(S.outbox.length===1?'':'en')+' wartet'+(S.outbox.length===1?'':'en')+' auf Readwise.','success');
+          if(stored)toast('Lokal gespeichert · '+S.outbox.length+' Änderung'+(S.outbox.length===1?'':'en')+' wartet'+(S.outbox.length===1?'':'en')+' auf Readwise.','success');
+          else toast('Dieses Dokument wurde bereits in einem anderen offenen App-Fenster bearbeitet. Die Ansicht wurde aktualisiert.','info');
         }catch(error){
           render();toast((error&&error.message?error.message:'Die Entscheidung konnte nicht lokal gespeichert werden.')+' Das Dokument bleibt offen.','error');
         }finally{setBusy(false);}
@@ -983,29 +1074,32 @@
         setBusy(true);openSyncDialog();E.syncStatus.textContent='Abgleich läuft …';
         var synced=0,conflicts=0,errors=0;
         try{
-          for(var index=0;index<S.outbox.length;index+=1){
-            var operation=S.outbox[index];operation.syncState='syncing';operation.lastError='';operation.attempts=(Number(operation.attempts)||0)+1;await saveState();renderSyncDialog();
-            try{
-              var fresh=await fetchDocument(operation.id);
-              if(targetAlreadyApplied(fresh,operation)){
-                S.outbox.splice(index,1);index-=1;synced+=1;await saveState();continue;
+          await stateTransaction(async function(){
+            for(var index=0;index<S.outbox.length;index+=1){
+              var operation=S.outbox[index];operation.syncState='syncing';operation.lastError='';operation.attempts=(Number(operation.attempts)||0)+1;await saveState();renderSyncDialog();
+              try{
+                var fresh=await fetchDocument(operation.id);
+                if(targetAlreadyApplied(fresh,operation)){
+                  S.outbox.splice(index,1);index-=1;synced+=1;await saveState();continue;
+                }
+                if(!baselineStillMatches(fresh,operation)){
+                  operation.syncState='conflict';operation.lastError='IR-Status, Termin oder Lesetagebuch wurde seit dem Laden auf einem anderen Gerät geändert.';conflicts+=1;await saveState();continue;
+                }
+                var plan=operation.target.plan,status=operation.target.status;
+                var notes=mergeIrBlock(fresh.notes,fresh,status,plan,operation.target.recordEncounter),tags=mergedTags(fresh,status,plan);
+                await request('/update/'+encodeURIComponent(operation.id)+'/',{method:'PATCH',body:JSON.stringify({tags:tags,notes:notes})});
+                S.outbox.splice(index,1);index-=1;synced+=1;await saveState();
+              }catch(error){
+                operation.syncState='error';operation.lastError=error&&error.message?error.message:'Unbekannter Sync-Fehler';errors+=1;await saveState();
+                if(!isOnline()||/Verbindung|zu lange|Token/.test(operation.lastError))break;
               }
-              if(!baselineStillMatches(fresh,operation)){
-                operation.syncState='conflict';operation.lastError='IR-Status, Termin oder Lesetagebuch wurde seit dem Laden auf einem anderen Gerät geändert.';conflicts+=1;await saveState();continue;
-              }
-              var plan=operation.target.plan,status=operation.target.status;
-              var notes=mergeIrBlock(fresh.notes,fresh,status,plan,operation.target.recordEncounter),tags=mergedTags(fresh,status,plan);
-              await request('/update/'+encodeURIComponent(operation.id)+'/',{method:'PATCH',body:JSON.stringify({tags:tags,notes:notes})});
-              S.outbox.splice(index,1);index-=1;synced+=1;await saveState();
-            }catch(error){
-              operation.syncState='error';operation.lastError=error&&error.message?error.message:'Unbekannter Sync-Fehler';errors+=1;await saveState();
-              if(!isOnline()||/Verbindung|zu lange|Token/.test(operation.lastError))break;
+              renderSyncDialog();
             }
-            renderSyncDialog();
-          }
-          S.lastSyncAt=new Date().toISOString();
-          S.lastSyncSummary=synced+' übertragen'+(conflicts?' · '+conflicts+' Konflikt'+(conflicts===1?'':'e'):'')+(errors?' · '+errors+' Fehler':'')+(S.outbox.length?' · '+S.outbox.length+' lokal erhalten':' · alles abgeglichen');
-          await saveState();toast(S.lastSyncSummary,S.outbox.length?'info':'success');
+            S.lastSyncAt=new Date().toISOString();
+            S.lastSyncSummary=synced+' übertragen'+(conflicts?' · '+conflicts+' Konflikt'+(conflicts===1?'':'e'):'')+(errors?' · '+errors+' Fehler':'')+(S.outbox.length?' · '+S.outbox.length+' lokal erhalten':' · alles abgeglichen');
+            await saveState();
+          });
+          toast(S.lastSyncSummary,S.outbox.length?'info':'success');
         }catch(fatalError){
           S.lastSyncSummary='Abgleich unterbrochen · alle noch offenen Änderungen bleiben lokal erhalten';
           if(E.syncStatus)E.syncStatus.textContent=(fatalError&&fatalError.message?fatalError.message+'. ':'')+S.lastSyncSummary;
@@ -1013,10 +1107,18 @@
           setBusy(false);render();renderSyncDialog();
         }
       }
-      function defer(){
+      async function defer(){
         if(busy||!S.queue.length)return;
         if(S.queue.length===1){toast('Das ist das letzte offene Dokument dieser Runde.','info');return;}
-        S.queue.push(S.queue.shift());S.deferred+=1;saveState();render();window.scrollTo({top:0,behavior:'auto'});toast('Für später ans Rundenende gelegt.','info');
+        var selectedId=S.queue[0].id,moved=false;setBusy(true);
+        try{
+          await stateTransaction(async function(){
+            var index=S.queue.findIndex(function(item){return item.id===selectedId;});if(index<0||S.queue.length<2)return;
+            S.queue.push(S.queue.splice(index,1)[0]);S.deferred+=1;await saveState();moved=true;
+          });
+          render();window.scrollTo({top:0,behavior:'auto'});toast(moved?'Für später ans Rundenende gelegt.':'Die Queue wurde bereits in einem anderen Fenster verändert.','info');
+        }catch(error){render();toast(error&&error.message?error.message:'Die Queue konnte nicht aktualisiert werden.','error');}
+        finally{setBusy(false);}
       }
 
       function formatDate(value){
@@ -1108,7 +1210,14 @@
       }
       async function clearQueue(){
         if(!window.confirm('Die noch offene Queue auf diesem Gerät verwerfen? Bereits getroffene, noch nicht synchronisierte Entscheidungen bleiben erhalten.'))return;
-        S.queue=[];S.dueReserve=[];S.newReserve=[];S.sessionTotal=0;S.deferred=0;S.lastLoadedAt='';S.dueCursor=null;S.newCursor=null;S.dueHasMore=true;S.newHasMore=true;S.query='';S.serverParams={};await saveState();cacheSummary();closeSettings();render();toast('Die offene Queue wurde verworfen. Lokale Entscheidungen bleiben erhalten.','info');
+        setBusy(true);
+        try{
+          await stateTransaction(async function(){
+            S.queue=[];S.dueReserve=[];S.newReserve=[];S.sessionTotal=0;S.deferred=0;S.lastLoadedAt='';S.dueCursor=null;S.newCursor=null;S.dueHasMore=true;S.newHasMore=true;S.query='';S.serverParams={};await saveState();
+          });
+          cacheSummary();closeSettings();render();toast('Die offene Queue wurde verworfen. Lokale Entscheidungen bleiben erhalten.','info');
+        }catch(error){render();toast(error&&error.message?error.message:'Die Queue konnte nicht verworfen werden.','error');}
+        finally{setBusy(false);}
       }
       function disconnect(){
         localStorage.removeItem(TOKEN_KEY);closeSettings();E.tokenInput.value='';E.queryInput.value=settingsData.query;document.title='IR Inbox';
@@ -1147,18 +1256,14 @@
         }
         window.addEventListener('orientationchange',refreshOpenLinkTarget);
         window.addEventListener('online',updateNetworkState);window.addEventListener('offline',updateNetworkState);
+        window.addEventListener('storage',function(event){if(event.key===STATE_KEY)scheduleExternalRefresh();});
+        if(stateChannel)stateChannel.addEventListener('message',function(event){if(event.data&&event.data.type==='state-changed'&&event.data.source!==contextId)scheduleExternalRefresh();});
         document.addEventListener('visibilitychange',function(){if(!document.hidden)refreshOpenLinkTarget();});
         document.addEventListener('keydown',keydown);
       }
       async function init(){
         normalizeSettings();cacheElements();bind();
-        var localState=clone(S),durable=await readDurableState();
-        if(durable&&typeof durable==='object'){
-          var localRevision=Number(localState.revision)||0,durableRevision=Number(durable.revision)||0;
-          var localTime=Date.parse(localState.modifiedAt||'')||0,durableTime=Date.parse(durable.modifiedAt||'')||0;
-          S=durableRevision>localRevision||(durableRevision===localRevision&&durableTime>=localTime)?durable:localState;
-        }
-        normalizeState();await saveState();
+        await stateTransaction(async function(){normalizeState();await saveState();});
         E.queryInput.value=settingsData.query;cacheSummary();renderSyncChrome();
         if(S.queue.length){render();toast('Offline-Queue wiederhergestellt'+(S.outbox.length?' · '+S.outbox.length+' Änderungen warten auf Sync':'')+'.','info');}
         else if(S.lastLoadedAt||S.outbox.length)render();
