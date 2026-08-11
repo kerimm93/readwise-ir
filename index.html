@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#EEE7D8">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="Reader-Dokumente aus einer gefilterten Ansicht für Incremental Reading vormerken.">
+  <meta name="description" content="Readwise-Dokumente in einer lokalen Offline-Queue bearbeiten und bewusst synchronisieren.">
   <meta name="application-name" content="IR Inbox">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -45,7 +45,7 @@
     .brand-title{display:block;overflow:hidden;font:700 21px/1.1 var(--serif);text-overflow:ellipsis;white-space:nowrap}.brand-sub{display:block;margin-top:3px;color:var(--ink-dim);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
     .progress-copy{display:flex;justify-content:space-between;gap:12px;margin-bottom:7px;color:var(--ink-mid);font-size:12px;font-weight:750}.progress-count{color:var(--ink);font:700 12px var(--mono);font-variant-numeric:tabular-nums}
     .progress-track{height:4px;overflow:hidden;border-radius:99px;background:var(--surface-3)}.progress-bar{width:0;height:100%;border-radius:inherit;background:var(--accent);transition:width .18s ease}
-    .header-actions{display:flex;justify-content:flex-end;gap:7px}
+    .header-actions{display:flex;justify-content:flex-end;gap:7px;flex-wrap:wrap}
     .btn,.icon-btn,.skip,.decision,.preset{border:1px solid transparent;border-radius:var(--r-sm);cursor:pointer;transition:background-color .14s,border-color .14s,color .14s,box-shadow .14s,transform .14s}
     .btn{min-height:44px;padding:0 16px;font-size:14px;font-weight:750}.primary{color:#FBF7EE;background:var(--accent)}.primary:hover{background:var(--accent-hi)}.secondary{border-color:var(--rule);background:rgba(251,247,238,.78)}.secondary:hover,.icon-btn:hover{border-color:var(--rule-strong);background:var(--surface)}
     .icon-btn{display:grid;width:44px;height:44px;padding:0;place-items:center;border-color:var(--rule);background:rgba(251,247,238,.78)}.icon-btn svg{width:18px;height:18px;stroke:currentColor}
@@ -64,6 +64,7 @@
     .setup-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:21px}.link{color:var(--accent-deep);text-decoration-color:var(--accent-line);text-underline-offset:3px}.link:hover{color:var(--accent)}
     .privacy{display:flex;gap:9px;margin:18px 0 0;padding-top:17px;border-top:1px solid var(--rule-faint);color:var(--ink-dim);font-size:12px;line-height:1.55}.privacy svg{width:16px;height:16px;flex:0 0 auto;margin-top:1px;stroke:currentColor}
     .status{min-height:20px;margin:12px 0 0;color:var(--danger);font-size:12px}.status:empty{min-height:0;margin-top:0}
+    .sync-strip{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:-8px 0 20px;padding:10px 12px;border:1px solid var(--rule);border-radius:var(--r-sm);background:rgba(251,247,238,.72);color:var(--ink-mid);font-size:12px}.sync-strip-copy{display:flex;align-items:center;gap:9px;min-width:0}.network-dot{width:8px;height:8px;flex:0 0 auto;border-radius:50%;background:var(--ok)}.network-dot.offline{background:var(--paused)}.sync-strip strong{color:var(--ink);font-weight:800}.sync-strip .btn{min-height:36px;padding:0 11px;font-size:12px}.sync-badge{display:inline-grid;min-width:20px;height:20px;margin-left:5px;padding:0 5px;place-items:center;border-radius:99px;color:#fff;background:var(--accent);font:800 10px var(--mono)}
     .loading{display:none;min-height:56vh;place-items:center;text-align:center}.loading.active{display:grid}.spinner{position:relative;width:54px;height:54px;margin:0 auto 20px;border:1px solid var(--rule-strong);border-radius:50%;background:var(--surface)}.spinner:after{position:absolute;inset:-1px;border:2px solid transparent;border-top-color:var(--accent);border-radius:50%;content:"";animation:spin .78s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.loading h1{margin:0;font:700 27px var(--serif)}.loading p{margin:8px 0 0;color:var(--ink-dim);font-size:14px}
     .review-card{overflow:hidden}.document-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;padding:27px 30px 23px;border-bottom:1px solid var(--rule)}
     .type{margin:0 0 8px;color:var(--ink-dim);font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.title{margin:0;font:700 clamp(25px,4vw,36px)/1.14 var(--serif);letter-spacing:-.028em;overflow-wrap:anywhere}
@@ -87,9 +88,10 @@
     .toasts{position:fixed;z-index:30;right:max(20px,env(safe-area-inset-right));bottom:max(22px,env(safe-area-inset-bottom));width:min(390px,calc(100vw - 40px));pointer-events:none}.toast{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--rule-strong);border-radius:var(--r-sm);background:var(--surface);box-shadow:0 14px 38px rgba(41,37,31,.14);font-size:13px;font-weight:700}.toast-dot{width:8px;height:8px;flex:0 0 auto;margin-top:6px;border-radius:50%;background:var(--ok)}.toast.error .toast-dot{background:var(--danger)}.toast.info .toast-dot{background:var(--complete)}
     dialog{width:min(620px,calc(100vw - 32px));max-height:calc(100vh - 34px);padding:0;overflow:auto;border:1px solid var(--rule-strong);border-radius:var(--r-lg);color:var(--ink);background:var(--surface);box-shadow:0 30px 90px rgba(41,37,31,.25)}dialog::backdrop{background:rgba(41,37,31,.42);backdrop-filter:blur(2px)}.dialog-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--rule)}.dialog-head h2{margin:0;font:700 24px var(--serif)}.dialog-body{padding:22px}.dialog-section+.dialog-section{margin-top:24px;padding-top:22px;border-top:1px solid var(--rule-faint)}.dialog-section h3{margin:0 0 5px;font-size:13px}.dialog-section p{margin:0;color:var(--ink-dim);font-size:12px;line-height:1.55}.dialog-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.check{display:flex;align-items:flex-start;gap:9px;margin-top:15px;color:var(--ink-mid);font-size:12px;line-height:1.5}.check input{width:17px;height:17px;margin-top:1px;accent-color:var(--accent)}
     .danger{color:var(--danger)}
+    .sync-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:18px}.sync-stat{padding:12px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--surface-2)}.sync-stat span{display:block;color:var(--ink-dim);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.sync-stat strong{display:block;margin-top:5px;font:700 22px var(--serif)}.sync-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}.sync-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:11px 12px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--surface-2)}.sync-item-title{overflow:hidden;font-size:12px;font-weight:800;text-overflow:ellipsis;white-space:nowrap}.sync-item-meta{margin-top:4px;color:var(--ink-dim);font-size:10px;line-height:1.45}.sync-item-side{display:flex;align-items:flex-end;flex-direction:column;gap:7px}.sync-state{align-self:flex-end;padding:4px 7px;border-radius:99px;color:var(--ink-mid);background:var(--surface-3);font:800 9px var(--mono);text-transform:uppercase}.sync-state.conflict,.sync-state.error{color:var(--danger);background:#FBE8E1}.discard-change{padding:0;border:0;color:var(--danger);background:transparent;cursor:pointer;font-size:9px;text-decoration:underline;text-underline-offset:2px}.empty-sync{padding:18px;border:1px dashed var(--rule-strong);border-radius:var(--r-sm);color:var(--ink-dim);font-size:12px;text-align:center}.queue-name{font-weight:800}
     @media(max-width:820px){
       body{background:repeating-linear-gradient(0deg,transparent 0,transparent 31px,rgba(102,95,85,.035) 31px,rgba(102,95,85,.035) 32px),var(--paper)}
-      .app{width:100%;padding-left:12px;padding-right:12px;padding-bottom:max(18px,env(safe-area-inset-bottom))}.header{grid-template-columns:1fr auto;gap:14px;margin-bottom:20px}.progress{grid-column:1/-1;grid-row:2}.header-actions{grid-column:2;grid-row:1}.brand-sub,.reload-copy{display:none}
+      .app{width:100%;padding-left:12px;padding-right:12px;padding-bottom:max(18px,env(safe-area-inset-bottom))}.header{grid-template-columns:1fr auto;gap:14px;margin-bottom:20px}.progress{grid-column:1/-1;grid-row:2}.header-actions{grid-column:2;grid-row:1}.brand-sub,.reload-copy,.sync-copy{display:none}.sync-strip{align-items:flex-start}.sync-summary{grid-template-columns:1fr}.sync-item{grid-template-columns:1fr}.sync-state{justify-self:start}
       .document-head{padding:22px 21px 19px}.document-body{grid-template-columns:1fr;gap:28px;padding:27px 21px 31px}.decision-section{bottom:0;margin:12px -12px 0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));border-right:0;border-left:0;border-radius:14px 14px 0 0}.decision-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.decision{min-height:60px;padding:8px 10px}.help,.keys{display:none}.setup{margin-top:28px}.setup-panel,.state{padding:23px 20px}.planning{grid-template-columns:1fr 1fr}.planning .interval-field{grid-column:1/-1}.ir-context{align-items:flex-start;flex-direction:column}.ir-due-copy{text-align:left}
     }
     @media(max-width:470px){.brand-title{font-size:18px}.meta .optional-dot,.meta .site-name{display:none}.setup-actions{align-items:stretch;flex-direction:column-reverse}.setup-actions .primary{width:100%}.settings-grid{grid-template-columns:1fr}.decision-label{font-size:13px}}
@@ -108,7 +110,8 @@
         <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Fortschritt" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><div class="progress-bar" id="progressBar"></div></div>
       </div>
       <div class="header-actions">
-        <button class="btn secondary" id="reload" type="button" hidden title="Ansicht neu laden"><span aria-hidden="true">↻</span><span class="reload-copy"> Neu laden</span></button>
+        <button class="btn secondary" id="syncButton" type="button" hidden title="Lokale Änderungen mit Readwise abgleichen"><span aria-hidden="true">⇅</span><span class="sync-copy"> Abgleichen</span><span class="sync-badge" id="syncBadge" hidden>0</span></button>
+        <button class="btn secondary" id="reload" type="button" hidden title="Neue Warteschleife aus Readwise laden"><span aria-hidden="true">↻</span><span class="reload-copy"> Neue Queue</span></button>
         <button class="icon-btn" id="settings" type="button" hidden aria-label="Einstellungen öffnen" title="Einstellungen">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1z"/></svg>
         </button>
@@ -116,10 +119,14 @@
     </header>
 
     <main>
+      <section class="sync-strip" id="syncStrip" hidden aria-live="polite">
+        <div class="sync-strip-copy"><span class="network-dot" id="networkDot" aria-hidden="true"></span><span id="networkCopy">Online</span><span aria-hidden="true">·</span><span><strong id="pendingCopy">0</strong> lokale Änderungen offen</span><span aria-hidden="true">·</span><span class="queue-name" id="queueNameCopy">Dieses Gerät</span></div>
+        <button class="btn secondary" id="syncStripButton" type="button">Mit Readwise abgleichen</button>
+      </section>
       <section class="screen setup" id="setupScreen">
         <p class="eyebrow">Incremental-Reading-Sitzung</p>
         <h1>Altes fortsetzen.<br>Neues entdecken.</h1>
-        <p class="lead">Lade eine gemischte Reader-Auswahl aus fälligen aktiven Texten und neuen Dokumenten ohne IR-Status. Termine und Kernzustand bleiben direkt in Readwise synchronisiert.</p>
+        <p class="lead">Lade online eine gemischte Reader-Auswahl und bearbeite sie anschließend auch offline. Deine Entscheidungen bleiben lokal erhalten, bis du sie bewusst mit Readwise abgleichst.</p>
         <form class="panel setup-panel" id="setupForm" novalidate>
           <div class="field">
             <label class="label" for="tokenInput">Readwise Access Token</label>
@@ -138,13 +145,13 @@
             </div>
             <p class="hint">Unterstützt die Reader-Syntax, soweit die benötigten Metadaten über die öffentliche Dokument-API verfügbar sind; nicht verfügbare Filter werden ausdrücklich gemeldet. *Der echte personalisierte Daily Digest ist über die API nicht abrufbar, daher bildet der Digest-Pool nur dessen ungelesenen Later-/Feed-Pool nach. <a href="https://docs.readwise.io/reader/guides/filtering/syntax-guide" target="_blank" rel="noreferrer">Syntaxhilfe ↗</a></p>
           </div>
-          <div class="setup-actions"><a class="link" href="https://readwise.io/access_token" target="_blank" rel="noreferrer">Token bei Readwise holen ↗</a><button class="btn primary" id="connect" type="submit">Verbinden &amp; Runde laden</button></div>
+          <div class="setup-actions"><a class="link" href="https://readwise.io/access_token" target="_blank" rel="noreferrer">Token bei Readwise holen ↗</a><button class="btn primary" id="connect" type="submit">Verbinden &amp; Offline-Queue laden</button></div>
           <p class="status" id="setupStatus" role="alert"></p>
-          <p class="privacy"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Token, Filter und offener Rundenstand bleiben lokal in diesem Browser. Die App sendet Anfragen ausschließlich direkt an Readwise.</span></p>
+          <p class="privacy"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Token, Filter, Queue und noch nicht synchronisierte Entscheidungen bleiben lokal auf diesem Gerät. Die App sendet Anfragen ausschließlich direkt an Readwise.</span></p>
         </form>
       </section>
 
-      <section class="screen loading" id="loadingScreen" aria-live="polite"><div><div class="spinner" aria-hidden="true"></div><h1>Reader-Auswahl wird geladen</h1><p id="loadingCopy">Dokumente werden gefiltert …</p></div></section>
+      <section class="screen loading" id="loadingScreen" aria-live="polite"><div><div class="spinner" aria-hidden="true"></div><h1 id="loadingTitle">Reader-Auswahl wird geladen</h1><p id="loadingCopy">Dokumente werden gefiltert …</p></div></section>
 
       <section class="screen" id="reviewScreen">
         <article class="panel review-card" aria-labelledby="documentTitle">
@@ -187,7 +194,7 @@
             <button class="decision completed-status" type="button" data-decision="completed"><span class="key">3</span><span><span class="decision-label">Abgeschlossen</span><span class="help">Zweck ist erfüllt</span></span></button>
             <button class="decision dropped-status" type="button" data-decision="dropped"><span class="key">0</span><span><span class="decision-label">Verworfen</span><span class="help">bewusst nicht verfolgen</span></span></button>
           </div>
-          <p class="keys"><code>1–3 / 0</code> entscheiden · <code>→</code> ans Rundenende · <code>O</code> in Reader öffnen</p>
+          <p class="keys"><code>1–3 / 0</code> lokal speichern · <code>→</code> ans Rundenende · <code>O</code> in Reader öffnen</p>
         </section>
       </section>
 
@@ -207,6 +214,11 @@
     <div class="dialog-head"><h2 id="settingsTitle">Einstellungen</h2><button class="icon-btn" id="closeSettings" type="button" aria-label="Einstellungen schließen"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="dialog-body">
       <section class="dialog-section">
+        <label class="label" for="queueName">Name dieser Warteschleife</label>
+        <input class="token" id="queueName" type="text" maxlength="60" placeholder="z. B. Smartphone · Videos">
+        <p style="margin-top:9px">Der Name, Filter und lokale Queue gelten nur auf diesem Gerät. Verwende möglichst disjunkte Filter, etwa Videos auf dem Smartphone und lange Texte auf dem E‑Paper-Gerät.</p>
+      </section>
+      <section class="dialog-section">
         <label class="label" for="settingsQuery">Reader-Filter</label>
         <textarea class="query" id="settingsQuery" spellcheck="false"></textarea>
         <div class="presets" data-presets>
@@ -217,7 +229,7 @@
           <button class="preset" type="button" data-query="progress__gt:3 AND minutes__gt:20 AND (in:inbox OR in:later OR in:shortlist)">Unfertige Longreads</button>
           <button class="preset" type="button" data-query="seen:false AND (in:later OR feed:true)">Digest-Pool*</button>
         </div>
-        <div class="dialog-actions"><button class="btn primary" id="saveQuery" type="button">Einstellungen speichern &amp; neu laden</button></div><p class="status" id="queryStatus" role="alert"></p>
+        <div class="dialog-actions"><button class="btn primary" id="saveQuery" type="button">Einstellungen speichern</button></div><p class="status" id="queryStatus" role="alert"></p>
       </section>
       <section class="dialog-section">
         <div class="settings-grid">
@@ -234,7 +246,22 @@
         <div class="input-wrap"><input class="token" id="settingsToken" type="password" autocomplete="off" spellcheck="false"><button class="reveal" type="button" data-reveal="settingsToken">Anzeigen</button></div>
         <div class="dialog-actions"><button class="btn secondary" id="saveToken" type="button">Token prüfen &amp; speichern</button></div><p class="status" id="settingsStatus" role="alert"></p>
       </section>
-      <section class="dialog-section"><h3>Lokaler Stand</h3><p id="cacheSummary">Kein geladener Stand.</p><div class="dialog-actions"><button class="btn secondary" id="clearQueue" type="button">Rundenstand verwerfen</button><button class="btn secondary danger" id="disconnect" type="button">Token entfernen</button></div></section>
+      <section class="dialog-section"><h3>Lokaler Stand</h3><p id="cacheSummary">Kein geladener Stand.</p><div class="dialog-actions"><button class="btn secondary" id="openSync" type="button">Sync-Stand ansehen</button><button class="btn secondary" id="clearQueue" type="button">Offene Queue verwerfen</button><button class="btn secondary danger" id="disconnect" type="button">Token entfernen</button></div></section>
+    </div>
+  </dialog>
+
+  <dialog id="syncDialog" aria-labelledby="syncTitle">
+    <div class="dialog-head"><h2 id="syncTitle">Readwise-Abgleich</h2><button class="icon-btn" id="closeSync" type="button" aria-label="Abgleich schließen"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="dialog-body">
+      <div class="sync-summary">
+        <div class="sync-stat"><span>Ausstehend</span><strong id="syncPendingCount">0</strong></div>
+        <div class="sync-stat"><span>Konflikte</span><strong id="syncConflictCount">0</strong></div>
+        <div class="sync-stat"><span>Letzter Abgleich</span><strong id="syncLastTime" style="font-size:14px">—</strong></div>
+      </div>
+      <p id="syncExplanation" style="margin:0 0 16px;color:var(--ink-mid);font-size:12px;line-height:1.6">Lokale Entscheidungen werden einzeln geprüft und erst danach an Readwise übertragen. Bei einem Fehler bleibt jede Änderung auf diesem Gerät erhalten.</p>
+      <ul class="sync-list" id="syncList"></ul>
+      <div class="dialog-actions"><button class="btn primary" id="runSync" type="button">Jetzt mit Readwise abgleichen</button><button class="btn secondary" id="closeSyncBottom" type="button">Später</button></div>
+      <p class="status" id="syncStatus" role="alert"></p>
     </div>
   </dialog>
 
@@ -247,6 +274,8 @@
       var TOKEN_KEY='readwise_ir_inbox.token.v1';
       var SETTINGS_KEY='readwise_ir_inbox.settings.v1';
       var STATE_KEY='readwise_ir_inbox.state.v1';
+      var DB_NAME='readwise_ir_inbox.offline.v1';
+      var DB_STORE='state';
       var IR_NAMES=['ir-active','ir-paused','ir-completed','ir-dropped'];
       var DUE_TAG=/^ir-due-(\d{4}-\d{2}-\d{2})$/i;
       var PRIORITY_TAG=/^ir-priority-([1-5])$/i;
@@ -259,15 +288,17 @@
         completed:{tag:'ir-completed',label:'Abgeschlossen'},
         dropped:{tag:'ir-dropped',label:'Verworfen'}
       };
-      var DEFAULT_SETTINGS={query:'in:later',roundSize:25,dueDays:3,reviewShare:60,openMode:'auto'};
+      var DEFAULT_SETTINGS={query:'in:later',roundSize:25,dueDays:3,reviewShare:60,openMode:'auto',queueName:'Dieses Gerät'};
       var busy=false;
       var lastListRequestAt=0;
       var settingsData=loadJson(SETTINGS_KEY,DEFAULT_SETTINGS);
       var S=loadJson(STATE_KEY,defaultState());
       var E={};
       var toastTimer=null;
+      var stateDbPromise=null;
+      var persistChain=Promise.resolve();
 
-      function defaultState(){return{version:2,queue:[],dueReserve:[],newReserve:[],sessionTotal:0,deferred:0,lastLoadedAt:'',dueCursor:null,newCursor:null,dueHasMore:true,newHasMore:true,query:'',serverParams:{}};}
+      function defaultState(){return{version:3,revision:0,queue:[],dueReserve:[],newReserve:[],outbox:[],sessionTotal:0,deferred:0,lastLoadedAt:'',lastSyncAt:'',lastSyncSummary:'',dueCursor:null,newCursor:null,dueHasMore:true,newHasMore:true,query:'',serverParams:{},modifiedAt:''};}
       function clone(value){return JSON.parse(JSON.stringify(value));}
       function loadJson(key,fallback){
         try{
@@ -278,21 +309,49 @@
         }catch(error){return clone(fallback);}
       }
       function saveJson(key,value){
-        try{localStorage.setItem(key,JSON.stringify(value));}
-        catch(error){toast('Der lokale Zwischenstand konnte nicht gespeichert werden.','error');}
+        try{localStorage.setItem(key,JSON.stringify(value));return true;}
+        catch(error){if(E.toasts)toast('Der lokale Zwischenstand konnte nicht im Browser-Speicher gespiegelt werden.','error');return false;}
+      }
+      function openStateDb(){
+        if(stateDbPromise)return stateDbPromise;
+        stateDbPromise=new Promise(function(resolve){
+          if(!window.indexedDB){resolve(null);return;}
+          var request=window.indexedDB.open(DB_NAME,1);
+          request.onupgradeneeded=function(){var db=request.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE);};
+          request.onsuccess=function(){resolve(request.result);};
+          request.onerror=function(){resolve(null);};
+        });
+        return stateDbPromise;
+      }
+      async function readDurableState(){
+        var db=await openStateDb();if(!db)return null;
+        return new Promise(function(resolve){
+          try{var tx=db.transaction(DB_STORE,'readonly'),request=tx.objectStore(DB_STORE).get('current');request.onsuccess=function(){resolve(request.result||null);};request.onerror=function(){resolve(null);};}
+          catch(error){resolve(null);}
+        });
+      }
+      async function writeDurableState(snapshot){
+        var db=await openStateDb();if(!db)return false;
+        return new Promise(function(resolve,reject){
+          try{var tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(snapshot,'current');tx.oncomplete=function(){resolve(true);};tx.onerror=function(){reject(tx.error||new Error('IndexedDB-Schreibfehler'));};tx.onabort=function(){reject(tx.error||new Error('IndexedDB-Schreibvorgang abgebrochen'));};}
+          catch(error){reject(error);}
+        });
       }
       function normalizeSettings(){
         settingsData.query=String(settingsData.query||DEFAULT_SETTINGS.query).trim();
+        settingsData.queueName=String(settingsData.queueName||DEFAULT_SETTINGS.queueName).replace(/[\r\n]+/g,' ').trim().slice(0,60)||DEFAULT_SETTINGS.queueName;
         settingsData.roundSize=clampInt(settingsData.roundSize,5,50,DEFAULT_SETTINGS.roundSize);
         settingsData.dueDays=DUE_OPTIONS.indexOf(Number(settingsData.dueDays))!==-1?Number(settingsData.dueDays):DEFAULT_SETTINGS.dueDays;
         settingsData.reviewShare=[20,40,60,80].indexOf(Number(settingsData.reviewShare))!==-1?Number(settingsData.reviewShare):DEFAULT_SETTINGS.reviewShare;
         settingsData.openMode=['auto','app','web'].indexOf(String(settingsData.openMode))!==-1?String(settingsData.openMode):DEFAULT_SETTINGS.openMode;
       }
       function normalizeState(){
-        if(Number(S.version)!==2){S=defaultState();return;}
+        if(Number(S.version)===2){S.version=3;S.outbox=[];S.lastSyncAt='';S.lastSyncSummary='';S.modifiedAt=S.lastLoadedAt||'';}
+        if(Number(S.version)!==3){S=defaultState();return;}
         S.queue=Array.isArray(S.queue)?S.queue:[];
         S.dueReserve=Array.isArray(S.dueReserve)?S.dueReserve:[];
         S.newReserve=Array.isArray(S.newReserve)?S.newReserve:[];
+        S.outbox=Array.isArray(S.outbox)?S.outbox:[];
         S.sessionTotal=Number(S.sessionTotal)||S.queue.length;
         S.deferred=Number(S.deferred)||0;
         S.dueCursor=typeof S.dueCursor==='string'&&S.dueCursor?S.dueCursor:null;
@@ -301,24 +360,33 @@
         S.newHasMore=S.newHasMore!==false;
         S.query=typeof S.query==='string'?S.query:'';
         S.serverParams=S.serverParams&&typeof S.serverParams==='object'?S.serverParams:{};
+        S.lastSyncAt=typeof S.lastSyncAt==='string'?S.lastSyncAt:'';
+        S.lastSyncSummary=typeof S.lastSyncSummary==='string'?S.lastSyncSummary:'';
+        S.modifiedAt=typeof S.modifiedAt==='string'?S.modifiedAt:'';
+        S.revision=Math.max(0,Number(S.revision)||0);
+        S.outbox.forEach(function(item){if(item&&item.syncState==='syncing'){item.syncState='pending';item.lastError='Der vorige Abgleich wurde unterbrochen; die lokale Änderung wurde wieder vorgemerkt.';}});
         if(S.sessionTotal<S.queue.length)S.sessionTotal=S.queue.length;
       }
       function clampInt(value,min,max,fallback){var n=parseInt(value,10);return isFinite(n)?Math.min(max,Math.max(min,n)):fallback;}
       function token(){return(localStorage.getItem(TOKEN_KEY)||'').trim();}
       function setToken(value){localStorage.setItem(TOKEN_KEY,String(value||'').trim());}
       function saveSettings(){normalizeSettings();saveJson(SETTINGS_KEY,settingsData);}
-      function saveState(){saveJson(STATE_KEY,S);}
+      function saveState(){
+        S.revision=(Number(S.revision)||0)+1;S.modifiedAt=new Date().toISOString();var snapshot=clone(S),localSaved=saveJson(STATE_KEY,snapshot);
+        persistChain=persistChain.then(function(){return writeDurableState(snapshot);}).catch(function(){return false;});
+        return persistChain.then(function(dbSaved){if(!localSaved&&!dbSaved)throw new Error('Die lokale Entscheidung konnte nicht dauerhaft gespeichert werden.');return true;});
+      }
       function cacheElements(){
-        ['progress','progressCount','progressTrack','progressBar','reload','settings','setupScreen','setupForm','tokenInput','queryInput','connect','setupStatus','loadingScreen','loadingCopy','reviewScreen','documentType','documentTitle','author','authorDot','siteName','dateDot','savedDate','openLink','summary','notePreview','location','readingTime','readingProgress','wordCount','documentTags','irKind','irDueCopy','decisionTitle','itemDueDays','itemPriority','itemPhase','activeDecisionLabel','activeDecisionHelp','decisionGrid','skip','emptyScreen','emptyTitle','emptyCopy','nextRound','emptyReload','emptySettings','errorScreen','errorCopy','retry','errorSettings','toasts','settingsDialog','closeSettings','settingsQuery','saveQuery','queryStatus','roundSize','reviewShare','dueDays','openMode','settingsToken','saveToken','settingsStatus','cacheSummary','clearQueue','disconnect'].forEach(function(id){E[id]=document.getElementById(id);});
+        ['progress','progressCount','progressTrack','progressBar','reload','syncButton','syncBadge','settings','syncStrip','networkDot','networkCopy','pendingCopy','queueNameCopy','syncStripButton','setupScreen','setupForm','tokenInput','queryInput','connect','setupStatus','loadingScreen','loadingTitle','loadingCopy','reviewScreen','documentType','documentTitle','author','authorDot','siteName','dateDot','savedDate','openLink','summary','notePreview','location','readingTime','readingProgress','wordCount','documentTags','irKind','irDueCopy','decisionTitle','itemDueDays','itemPriority','itemPhase','activeDecisionLabel','activeDecisionHelp','decisionGrid','skip','emptyScreen','emptyTitle','emptyCopy','nextRound','emptyReload','emptySettings','errorScreen','errorCopy','retry','errorSettings','toasts','settingsDialog','closeSettings','queueName','settingsQuery','saveQuery','queryStatus','roundSize','reviewShare','dueDays','openMode','settingsToken','saveToken','settingsStatus','cacheSummary','openSync','clearQueue','disconnect','syncDialog','closeSync','closeSyncBottom','syncPendingCount','syncConflictCount','syncLastTime','syncExplanation','syncList','runSync','syncStatus'].forEach(function(id){E[id]=document.getElementById(id);});
       }
       function screen(name){
         ['setupScreen','loadingScreen','reviewScreen','emptyScreen','errorScreen'].forEach(function(id){E[id].classList.toggle('active',id===name);});
-        var connected=!!token(),chrome=connected&&name!=='setupScreen';
-        E.settings.hidden=!connected;E.reload.hidden=!chrome;E.progress.hidden=!(chrome&&S.sessionTotal>0);
+        var localApp=!!token()||S.queue.length>0||S.lastLoadedAt||S.outbox.length>0,chrome=localApp&&name!=='setupScreen';
+        E.settings.hidden=!chrome;E.reload.hidden=!chrome;E.syncButton.hidden=!chrome;E.syncStrip.hidden=!chrome;E.progress.hidden=!(chrome&&S.sessionTotal>0);renderSyncChrome();
       }
       function setBusy(value){
         busy=value;
-        [E.connect,E.reload,E.nextRound,E.emptyReload,E.retry,E.saveQuery,E.saveToken,E.skip,E.itemDueDays,E.itemPriority,E.itemPhase].forEach(function(node){if(node)node.disabled=value;});
+        [E.connect,E.reload,E.syncButton,E.syncStripButton,E.runSync,E.nextRound,E.emptyReload,E.retry,E.saveQuery,E.saveToken,E.skip,E.itemDueDays,E.itemPriority,E.itemPhase].forEach(function(node){if(node)node.disabled=value;});
         Array.prototype.forEach.call(E.decisionGrid.querySelectorAll('button'),function(node){node.disabled=value;});
       }
       function reveal(button){
@@ -332,6 +400,54 @@
         var copy=document.createElement('span');copy.textContent=message;box.appendChild(dot);box.appendChild(copy);E.toasts.appendChild(box);
         toastTimer=window.setTimeout(function(){E.toasts.innerHTML='';},type==='error'?7200:3000);
       }
+      function isOnline(){return navigator.onLine!==false;}
+      function pendingCounts(){
+        var conflicts=S.outbox.filter(function(item){return item.syncState==='conflict';}).length;
+        return{total:S.outbox.length,conflicts:conflicts,waiting:S.outbox.length-conflicts};
+      }
+      function renderSyncChrome(){
+        if(!E.syncStrip)return;
+        var counts=pendingCounts(),online=isOnline();
+        E.networkDot.classList.toggle('offline',!online);E.networkCopy.textContent=online?'Online':'Offline';
+        E.pendingCopy.textContent=String(counts.total);E.queueNameCopy.textContent=settingsData.queueName;
+        E.syncBadge.hidden=counts.total===0;E.syncBadge.textContent=String(counts.total);
+        E.syncButton.classList.toggle('primary',counts.total>0);E.syncButton.classList.toggle('secondary',counts.total===0);
+        E.syncStripButton.textContent=counts.total?counts.total+' Änderung'+(counts.total===1?'':'en')+' abgleichen':'Sync-Stand ansehen';
+      }
+      function formatShortDateTime(value){
+        if(!value)return'—';
+        try{return new Intl.DateTimeFormat('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(value));}catch(error){return String(value);}
+      }
+      function renderSyncDialog(){
+        if(!E.syncDialog)return;var counts=pendingCounts();
+        E.syncPendingCount.textContent=String(counts.total);E.syncConflictCount.textContent=String(counts.conflicts);E.syncLastTime.textContent=formatShortDateTime(S.lastSyncAt);
+        E.syncList.innerHTML='';
+        if(!S.outbox.length){var empty=document.createElement('li');empty.className='empty-sync';empty.textContent='Alle lokalen Entscheidungen sind mit Readwise abgeglichen.';E.syncList.appendChild(empty);}
+        S.outbox.forEach(function(item){
+          var li=document.createElement('li');li.className='sync-item';
+          var body=document.createElement('div'),title=document.createElement('div'),meta=document.createElement('div'),side=document.createElement('div'),state=document.createElement('span');
+          title.className='sync-item-title';title.textContent=item.title||'Ohne Titel';meta.className='sync-item-meta';
+          var label=STATUS[item.target&&item.target.status]?STATUS[item.target.status].label:'Änderung';
+          meta.textContent=label+(item.target&&item.target.status==='active'&&item.target.plan&&item.target.plan.dueDate?' · fällig '+item.target.plan.dueDate:'')+(item.lastError?' · '+item.lastError:'');
+          state.className='sync-state '+(item.syncState||'pending');state.textContent=item.syncState==='conflict'?'Konflikt':item.syncState==='error'?'Fehler':item.syncState==='syncing'?'läuft':'wartet';
+          side.className='sync-item-side';side.appendChild(state);
+          if(item.syncState==='conflict'){
+            var discard=document.createElement('button');discard.type='button';discard.className='discard-change';discard.setAttribute('data-discard-operation',item.operationId);discard.textContent='lokale Änderung verwerfen';side.appendChild(discard);
+          }
+          body.appendChild(title);body.appendChild(meta);li.appendChild(body);li.appendChild(side);E.syncList.appendChild(li);
+        });
+        E.runSync.disabled=busy||!S.outbox.length||!isOnline();
+        E.runSync.textContent=isOnline()?'Jetzt mit Readwise abgleichen':'Offline · später abgleichen';
+        E.syncStatus.textContent=S.lastSyncSummary||'';renderSyncChrome();
+      }
+      function openSyncDialog(){if(E.settingsDialog.open)E.settingsDialog.close();renderSyncDialog();if(!E.syncDialog.open)E.syncDialog.showModal();}
+      function closeSyncDialog(){if(E.syncDialog.open)E.syncDialog.close();}
+      async function discardPendingOperation(operationId){
+        var index=S.outbox.findIndex(function(item){return item.operationId===operationId;});if(index<0)return;
+        var item=S.outbox[index];if(!window.confirm('Die lokale Änderung für „'+item.title+'“ verwerfen und den aktuellen Readwise-Stand behalten?'))return;
+        S.outbox.splice(index,1);S.lastSyncSummary='Eine konfliktbehaftete lokale Änderung wurde bewusst verworfen.';await saveState();render();renderSyncDialog();toast('Lokale Änderung verworfen. Der Readwise-Stand blieb unverändert.','info');
+      }
+      function updateNetworkState(){renderSyncChrome();renderSyncDialog();if(!isOnline()&&S.outbox.length)toast('Offline: '+S.outbox.length+' lokale Änderung'+(S.outbox.length===1?' bleibt':'en bleiben')+' sicher vorgemerkt.','info');}
       function apiMessage(response,body){
         if(response.status===401||response.status===403)return'Der Readwise-Token wurde abgelehnt. Bitte prüfe ihn in den Einstellungen.';
         if(response.status===429){var wait=response.headers.get('Retry-After');return wait?'Readwise begrenzt gerade die Anfragen. Bitte versuche es in '+wait+' Sekunden erneut.':'Readwise begrenzt gerade die Anfragen. Bitte versuche es gleich erneut.';}
@@ -649,7 +765,7 @@
         return request('/list/?'+params.toString());
       }
       function addUnique(pool,doc){
-        var exists=S.queue.concat(S.dueReserve,S.newReserve).some(function(item){return item.id===doc.id;});
+        var exists=S.queue.concat(S.dueReserve,S.newReserve,S.outbox||[]).some(function(item){return item.id===doc.id;});
         if(!exists)pool.push(doc);
       }
       async function fillPool(kind,target,tree,maxPages){
@@ -695,11 +811,15 @@
       }
       async function loadRound(reset){
         if(busy)return;
+        if(S.outbox.length){openSyncDialog();toast('Vor einer neuen Queue müssen die lokalen Entscheidungen erst abgeglichen werden.','info');return;}
+        if(!isOnline()){toast('Offline: Die vorhandene Queue bleibt vollständig erhalten. Eine neue Queue benötigt Readwise.','info');return;}
+        var previous=clone(S);
         setBusy(true);screen('loadingScreen');
+        E.loadingTitle.textContent='Offline-Queue wird zusammengestellt';
         try{
           var query=String(settingsData.query||'').trim(),tree=parseQuery(query);
           if(reset||S.query!==query){
-            S=defaultState();S.query=query;S.serverParams=deriveServerParams(tree);
+            var freshState=defaultState();freshState.lastSyncAt=previous.lastSyncAt;freshState.lastSyncSummary=previous.lastSyncSummary;S=freshState;S.query=query;S.serverParams=deriveServerParams(tree);
           }
           var target=settingsData.roundSize,dueTarget=Math.round(target*settingsData.reviewShare/100),newTarget=target-dueTarget;
           await fillPool('due',dueTarget,tree,4);
@@ -711,13 +831,13 @@
           if(missing>0&&S.newHasMore){await fillPool('new',newCount+missing,tree,2);newCount=Math.min(newCount+missing,S.newReserve.length);missing=target-dueCount-newCount;}
           if(missing>0&&S.dueHasMore){await fillPool('due',dueCount+missing,tree,4);dueCount=Math.min(dueCount+missing,S.dueReserve.length);}
           var dueItems=S.dueReserve.splice(0,dueCount),newItems=S.newReserve.splice(0,Math.min(newCount,target-dueItems.length));
-          S.queue=mixQueue(dueItems,newItems);S.sessionTotal=S.queue.length;S.deferred=0;S.lastLoadedAt=new Date().toISOString();saveState();render();
-          if(S.queue.length)toast('Gemischte Runde: '+dueItems.length+' fällig · '+newItems.length+' neu.','info');
-        }catch(error){showError(error&&error.message?error.message:'Die Reader-Auswahl konnte nicht geladen werden.');}
+          S.queue=mixQueue(dueItems,newItems);S.sessionTotal=S.queue.length;S.deferred=0;S.lastLoadedAt=new Date().toISOString();await saveState();render();
+          if(S.queue.length)toast('Offline-Queue gespeichert: '+dueItems.length+' fällig · '+newItems.length+' neu.','info');
+        }catch(error){S=previous;await saveState();render();toast((error&&error.message?error.message:'Die Reader-Auswahl konnte nicht geladen werden.')+' Die vorhandene Queue bleibt erhalten.','error');}
         finally{setBusy(false);}
       }
       function loadFresh(){return loadRound(true);}
-      function nextRound(){return loadRound(false);}
+      function nextRound(){return S.outbox.length?openSyncDialog():loadFresh();}
       async function fetchDocument(id){
         var data=await request('/list/?id='+encodeURIComponent(id)+'&limit=1');
         var doc=data&&data.results&&data.results[0];
@@ -728,11 +848,13 @@
       var BEGIN='<!-- BEGIN INCREMENTAL READING v1 -->';
       var END='<!-- END INCREMENTAL READING v1 -->';
       function countOccurrences(text,needle){var count=0,index=0;while((index=text.indexOf(needle,index))!==-1){count+=1;index+=needle.length;}return count;}
-      function isoDateWithOffset(days){var date=new Date();date.setHours(12,0,0,0);date.setDate(date.getDate()+Number(days||0));return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
+      function isoDateWithOffset(days,baseDate){var date=baseDate?new Date(String(baseDate)+'T12:00:00'):new Date();date.setHours(12,0,0,0);date.setDate(date.getDate()+Number(days||0));return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
+      function planDate(plan){return plan&&validIsoDate(plan.decidedDate)?plan.decidedDate:isoDateWithOffset(0);}
+      function dueDateForPlan(plan){return plan&&validIsoDate(plan.dueDate)?plan.dueDate:isoDateWithOffset(plan&&plan.days||0,planDate(plan));}
       function safeInline(value){return String(value||'Ohne Titel').replace(/[\r\n]+/g,' ').replace(/\s+/g,' ').trim();}
       function buildInitialBlock(doc,status,plan){
         plan=plan||{days:settingsData.dueDays,priority:3,phase:'orientation'};
-        var today=isoDateWithOffset(0),due=status==='active'?isoDateWithOffset(plan.days):'—',title=safeInline(doc.title);
+        var today=planDate(plan),due=status==='active'?dueDateForPlan(plan):'—',title=safeInline(doc.title);
         var descriptions={
           active:'Für Incremental Reading vorgemerkt; Inhalt, Relevanz und persönlicher Lesezweck sind noch zu klären.',
           paused:'Für eine mögliche spätere Incremental-Reading-Phase geparkt; derzeit ist keine Wiedervorlage geplant.',
@@ -773,13 +895,13 @@
         return block.replace(pattern,'$1'+value);
       }
       function updateExistingBlock(block,status,plan,recordEncounter){
-        var due=status==='active'?isoDateWithOffset(plan.days):'—',next=block;
+        var due=status==='active'?dueDateForPlan(plan):'—',next=block;
         next=replaceIrField(next,'Status',status);
         next=replaceIrField(next,'Priorität',String(plan.priority));
         next=replaceIrField(next,'Phase',plan.phase);
         next=replaceIrField(next,'Nächste Wiedervorlage',due);
         if(recordEncounter){
-          var today=isoDateWithOffset(0),encounters=clampInt(irField(next,'Begegnungen'),0,9999,0)+1;
+          var today=planDate(plan),encounters=clampInt(irField(next,'Begegnungen'),0,9999,0)+1;
           next=replaceIrField(next,'Zuletzt bearbeitet',today);
           next=replaceIrField(next,'Letztes Intervall',status==='active'?plan.days+' Tage':'—');
           next=replaceIrField(next,'Begegnungen',String(encounters));
@@ -812,13 +934,30 @@
         keep.push(STATUS[status].tag);
         keep.push('ir-priority-'+plan.priority);
         keep.push('ir-phase-'+plan.phase);
-        if(status==='active')keep.push('ir-due-'+isoDateWithOffset(plan.days));
+        if(status==='active')keep.push('ir-due-'+dueDateForPlan(plan));
         return keep;
       }
       function currentPlan(){
         var days=Number(E.itemDueDays.value),priority=clampInt(E.itemPriority.value,1,5,3),phase=lower(E.itemPhase.value);
-        return{days:DUE_OPTIONS.indexOf(days)!==-1?days:settingsData.dueDays,priority:priority,phase:PHASES.indexOf(phase)!==-1?phase:'orientation'};
+        days=DUE_OPTIONS.indexOf(days)!==-1?days:settingsData.dueDays;var decidedDate=isoDateWithOffset(0);
+        return{days:days,dueDate:isoDateWithOffset(days,decidedDate),decidedDate:decidedDate,priority:priority,phase:PHASES.indexOf(phase)!==-1?phase:'orientation'};
       }
+      function irFamilySignature(doc){
+        return tagNames(doc).filter(function(tag){var value=lower(tag);return IR_NAMES.indexOf(value)!==-1||DUE_TAG.test(value)||PRIORITY_TAG.test(value)||PHASE_TAG.test(value);}).map(lower).sort().join('|');
+      }
+      function operationId(){return'D'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);}
+      function createPendingOperation(item,status,plan){
+        var recordEncounter=item._irKind==='due';
+        var targetNotes=mergeIrBlock(item.notes,item,status,plan,recordEncounter),targetTags=mergedTags(item,status,plan);
+        var targetDoc=Object.assign({},item,{notes:targetNotes,tags:targetTags});
+        return{
+          id:item.id,operationId:operationId(),title:item.title||'Ohne Titel',kind:item._irKind||'new',queuedAt:new Date().toISOString(),syncState:'pending',attempts:0,lastError:'',
+          baseline:{irBlock:irBlock(item.notes),familySignature:irFamilySignature(item)},
+          target:{status:status,plan:clone(plan),recordEncounter:recordEncounter,irBlock:irBlock(targetNotes),familySignature:irFamilySignature(targetDoc)}
+        };
+      }
+      function baselineStillMatches(fresh,operation){return irBlock(fresh.notes)===(operation.baseline.irBlock||'')&&irFamilySignature(fresh)===(operation.baseline.familySignature||'');}
+      function targetAlreadyApplied(fresh,operation){return irBlock(fresh.notes)===(operation.target.irBlock||'')&&irFamilySignature(fresh)===(operation.target.familySignature||'');}
       async function decide(status){
         if(busy||!S.queue.length||!STATUS[status])return;
         var item=S.queue[0];
@@ -828,21 +967,51 @@
         }
         setBusy(true);
         try{
-          var fresh=await fetchDocument(item.id);
-          if(item._irKind==='new'&&hasIrStatus(fresh))throw new Error('Das Dokument wurde inzwischen auf einem anderen Gerät in das IR-System aufgenommen. Bitte lade die Ansicht neu.');
-          if(item._irKind==='due'){
-            var freshStatuses=statusTags(fresh).map(lower),freshMeta=irMetadata(fresh);
-            if(freshStatuses.indexOf('ir-active')===-1)throw new Error('Der IR-Status wurde inzwischen auf einem anderen Gerät geändert. Bitte lade die Ansicht neu.');
-            if(freshMeta.due!==String(item._irDue||''))throw new Error('Der Termin wurde inzwischen auf einem anderen Gerät geändert. Bitte lade die Ansicht neu.');
-          }
-          var plan=currentPlan(),recordEncounter=item._irKind==='due';
-          var notes=mergeIrBlock(fresh.notes,fresh,status,plan,recordEncounter),tags=mergedTags(fresh,status,plan);
-          await request('/update/'+encodeURIComponent(item.id)+'/',{method:'PATCH',body:JSON.stringify({tags:tags,notes:notes})});
-          S.queue.shift();saveState();render();window.scrollTo({top:0,behavior:'auto'});
-          toast('„'+STATUS[status].label+'“ gespeichert'+(status==='active'?' · '+isoDateWithOffset(plan.days):'')+'.','success');
+          var plan=currentPlan(),operation=createPendingOperation(item,status,plan),before=clone(S);
+          S.outbox.push(operation);S.queue.shift();
+          try{await saveState();}catch(storageError){S=before;throw storageError;}
+          render();window.scrollTo({top:0,behavior:'auto'});
+          toast('Lokal gespeichert · '+S.outbox.length+' Änderung'+(S.outbox.length===1?'':'en')+' wartet'+(S.outbox.length===1?'':'en')+' auf Readwise.','success');
         }catch(error){
-          render();toast((error&&error.message?error.message:'Der IR-Status konnte nicht gespeichert werden.')+' Das Dokument bleibt offen.','error');
+          render();toast((error&&error.message?error.message:'Die Entscheidung konnte nicht lokal gespeichert werden.')+' Das Dokument bleibt offen.','error');
         }finally{setBusy(false);}
+      }
+      async function syncPendingChanges(){
+        if(busy)return;if(!S.outbox.length){openSyncDialog();return;}
+        if(!isOnline()){openSyncDialog();E.syncStatus.textContent='Keine Verbindung. Alle lokalen Änderungen bleiben erhalten.';return;}
+        if(!token()){toast('Zum Abgleichen wird der Readwise-Token auf diesem Gerät benötigt.','error');return;}
+        setBusy(true);openSyncDialog();E.syncStatus.textContent='Abgleich läuft …';
+        var synced=0,conflicts=0,errors=0;
+        try{
+          for(var index=0;index<S.outbox.length;index+=1){
+            var operation=S.outbox[index];operation.syncState='syncing';operation.lastError='';operation.attempts=(Number(operation.attempts)||0)+1;await saveState();renderSyncDialog();
+            try{
+              var fresh=await fetchDocument(operation.id);
+              if(targetAlreadyApplied(fresh,operation)){
+                S.outbox.splice(index,1);index-=1;synced+=1;await saveState();continue;
+              }
+              if(!baselineStillMatches(fresh,operation)){
+                operation.syncState='conflict';operation.lastError='IR-Status, Termin oder Lesetagebuch wurde seit dem Laden auf einem anderen Gerät geändert.';conflicts+=1;await saveState();continue;
+              }
+              var plan=operation.target.plan,status=operation.target.status;
+              var notes=mergeIrBlock(fresh.notes,fresh,status,plan,operation.target.recordEncounter),tags=mergedTags(fresh,status,plan);
+              await request('/update/'+encodeURIComponent(operation.id)+'/',{method:'PATCH',body:JSON.stringify({tags:tags,notes:notes})});
+              S.outbox.splice(index,1);index-=1;synced+=1;await saveState();
+            }catch(error){
+              operation.syncState='error';operation.lastError=error&&error.message?error.message:'Unbekannter Sync-Fehler';errors+=1;await saveState();
+              if(!isOnline()||/Verbindung|zu lange|Token/.test(operation.lastError))break;
+            }
+            renderSyncDialog();
+          }
+          S.lastSyncAt=new Date().toISOString();
+          S.lastSyncSummary=synced+' übertragen'+(conflicts?' · '+conflicts+' Konflikt'+(conflicts===1?'':'e'):'')+(errors?' · '+errors+' Fehler':'')+(S.outbox.length?' · '+S.outbox.length+' lokal erhalten':' · alles abgeglichen');
+          await saveState();toast(S.lastSyncSummary,S.outbox.length?'info':'success');
+        }catch(fatalError){
+          S.lastSyncSummary='Abgleich unterbrochen · alle noch offenen Änderungen bleiben lokal erhalten';
+          if(E.syncStatus)E.syncStatus.textContent=(fatalError&&fatalError.message?fatalError.message+'. ':'')+S.lastSyncSummary;
+        }finally{
+          setBusy(false);render();renderSyncDialog();
+        }
       }
       function defer(){
         if(busy||!S.queue.length)return;
@@ -879,12 +1048,11 @@
         tags.forEach(function(tag){var li=document.createElement('li');li.className='tag';li.textContent=tag;E.documentTags.appendChild(li);});
       }
       function render(){
-        renderProgress();cacheSummary();
+        renderProgress();cacheSummary();renderSyncChrome();
         if(!S.queue.length){
-          var available=S.dueReserve.length>0||S.newReserve.length>0||S.dueHasMore||S.newHasMore;
-          E.emptyTitle.textContent=S.sessionTotal?'Runde abgeschlossen.':'Keine passenden offenen Dokumente.';
-          E.emptyCopy.textContent=S.sessionTotal?'Du hast alle '+S.sessionTotal+' Dokumente dieser gemischten Runde entschieden. Du kannst hier bewusst aufhören oder die nächste begrenzte Runde beginnen.':'Im geladenen Teil der Ansicht „'+settingsData.query+'“ wurden weder fällige aktive noch neue IR-Dokumente gefunden.';
-          E.nextRound.hidden=!available;E.emptyReload.hidden=available;E.nextRound.textContent='Nächste Runde mit bis zu '+settingsData.roundSize+' starten';
+          E.emptyTitle.textContent=S.sessionTotal?'Runde abgeschlossen.':'Keine passende Offline-Queue geladen.';
+          E.emptyCopy.textContent=S.outbox.length?'Alle Entscheidungen dieser Queue sind lokal gespeichert. '+S.outbox.length+' Änderung'+(S.outbox.length===1?' wartet':'en warten')+' noch auf den Abgleich mit Readwise.':'Du kannst online eine neue, auf diesem Gerät gespeicherte Queue mit bis zu '+settingsData.roundSize+' Dokumenten aus „'+settingsData.query+'“ laden.';
+          E.nextRound.hidden=false;E.emptyReload.hidden=true;E.nextRound.textContent=S.outbox.length?'Jetzt '+S.outbox.length+' Änderung'+(S.outbox.length===1?'':'en')+' abgleichen':'Neue Offline-Queue laden';
           screen('emptyScreen');document.title='Runde abgeschlossen · IR Inbox';return;
         }
         var item=S.queue[0],site=item.site_name||item.source||domainOf(item.source_url)||'Reader';
@@ -907,9 +1075,9 @@
       }
       function showError(message){E.errorCopy.textContent=message;screen('errorScreen');}
       function cacheSummary(){
-        if(!S.lastLoadedAt){E.cacheSummary.textContent='Kein geladener Stand.';return;}
+        if(!S.lastLoadedAt){E.cacheSummary.textContent=S.outbox.length?S.outbox.length+' lokale Änderungen warten auf den Abgleich.':'Kein geladener Stand.';return;}
         var date;try{date=new Intl.DateTimeFormat('de-DE',{dateStyle:'medium',timeStyle:'short'}).format(new Date(S.lastLoadedAt));}catch(error){date=S.lastLoadedAt;}
-        E.cacheSummary.textContent=S.queue.length+' offen · '+S.dueReserve.length+' fällig vorgemerkt · '+S.newReserve.length+' neu vorgemerkt · zuletzt geladen '+date;
+        E.cacheSummary.textContent=S.queue.length+' offen · '+S.outbox.length+' noch nicht synchronisiert · Filter-Snapshot „'+(S.query||settingsData.query)+'“ · geladen '+date;
       }
       async function connect(event){
         event.preventDefault();if(busy)return;
@@ -917,18 +1085,18 @@
         if(!value){E.setupStatus.textContent='Bitte füge deinen Readwise-Token ein.';E.tokenInput.focus();return;}
         try{parseQuery(query);}catch(error){E.setupStatus.textContent=error.message;E.queryInput.focus();return;}
         E.setupStatus.textContent='';setToken(value);settingsData.query=query;saveSettings();setBusy(true);E.connect.textContent='Token wird geprüft …';
-        try{await requestUrl(AUTH_API);E.connect.textContent='Verbinden & Runde laden';setBusy(false);await loadFresh();}
-        catch(error){localStorage.removeItem(TOKEN_KEY);E.setupStatus.textContent=error&&error.message?error.message:'Der Token konnte nicht geprüft werden.';E.connect.textContent='Verbinden & Runde laden';setBusy(false);screen('setupScreen');E.tokenInput.focus();}
+        try{await requestUrl(AUTH_API);E.connect.textContent='Verbinden & Offline-Queue laden';setBusy(false);await loadFresh();}
+        catch(error){localStorage.removeItem(TOKEN_KEY);E.setupStatus.textContent=error&&error.message?error.message:'Der Token konnte nicht geprüft werden.';E.connect.textContent='Verbinden & Offline-Queue laden';setBusy(false);screen('setupScreen');E.tokenInput.focus();}
       }
       function openSettings(){
-        E.settingsQuery.value=settingsData.query;E.roundSize.value=String(settingsData.roundSize);E.reviewShare.value=String(settingsData.reviewShare);E.dueDays.value=String(settingsData.dueDays);E.openMode.value=settingsData.openMode;E.settingsToken.value=token();
+        E.queueName.value=settingsData.queueName;E.settingsQuery.value=settingsData.query;E.roundSize.value=String(settingsData.roundSize);E.reviewShare.value=String(settingsData.reviewShare);E.dueDays.value=String(settingsData.dueDays);E.openMode.value=settingsData.openMode;E.settingsToken.value=token();
         E.queryStatus.textContent='';E.settingsStatus.textContent='';E.settingsDialog.showModal();
       }
       function closeSettings(){E.settingsDialog.close();}
       async function applyQuery(){
         var query=E.settingsQuery.value.trim(),size=clampInt(E.roundSize.value,5,50,settingsData.roundSize);
         try{parseQuery(query);}catch(error){E.queryStatus.textContent=error.message;E.settingsQuery.focus();return;}
-        settingsData.query=query;settingsData.roundSize=size;settingsData.reviewShare=Number(E.reviewShare.value);settingsData.dueDays=Number(E.dueDays.value);settingsData.openMode=E.openMode.value;saveSettings();closeSettings();await loadFresh();
+        settingsData.queueName=E.queueName.value;settingsData.query=query;settingsData.roundSize=size;settingsData.reviewShare=Number(E.reviewShare.value);settingsData.dueDays=Number(E.dueDays.value);settingsData.openMode=E.openMode.value;saveSettings();closeSettings();render();toast('Einstellungen gespeichert. Filter und Mischung gelten für die nächste neu geladene Queue.','success');
       }
       async function saveToken(){
         if(busy)return;var value=E.settingsToken.value.trim(),old=token();
@@ -938,9 +1106,14 @@
         catch(error){if(old)setToken(old);else localStorage.removeItem(TOKEN_KEY);E.settingsStatus.textContent=error&&error.message?error.message:'Der Token konnte nicht geprüft werden.';}
         finally{setBusy(false);}
       }
-      function clearQueue(){S=defaultState();saveState();cacheSummary();closeSettings();render();toast('Der lokale Rundenstand wurde verworfen.','info');}
+      async function clearQueue(){
+        if(!window.confirm('Die noch offene Queue auf diesem Gerät verwerfen? Bereits getroffene, noch nicht synchronisierte Entscheidungen bleiben erhalten.'))return;
+        S.queue=[];S.dueReserve=[];S.newReserve=[];S.sessionTotal=0;S.deferred=0;S.lastLoadedAt='';S.dueCursor=null;S.newCursor=null;S.dueHasMore=true;S.newHasMore=true;S.query='';S.serverParams={};await saveState();cacheSummary();closeSettings();render();toast('Die offene Queue wurde verworfen. Lokale Entscheidungen bleiben erhalten.','info');
+      }
       function disconnect(){
-        localStorage.removeItem(TOKEN_KEY);localStorage.removeItem(STATE_KEY);S=defaultState();closeSettings();E.tokenInput.value='';E.queryInput.value=settingsData.query;E.setupStatus.textContent='';document.title='IR Inbox';screen('setupScreen');setTimeout(function(){E.tokenInput.focus();},0);
+        localStorage.removeItem(TOKEN_KEY);closeSettings();E.tokenInput.value='';E.queryInput.value=settingsData.query;document.title='IR Inbox';
+        if(S.queue.length||S.lastLoadedAt||S.outbox.length){render();toast('Token entfernt. Der gesamte Offline-Stand bleibt auf diesem Gerät erhalten.','info');}
+        else{E.setupStatus.textContent='Token entfernt.';screen('setupScreen');setTimeout(function(){E.tokenInput.focus();},0);}
       }
       function presetClick(event){
         var button=event.target.closest('[data-query]');if(!button)return;
@@ -949,7 +1122,7 @@
       }
       function keydown(event){
         var target=event.target,tag=target&&target.tagName?target.tagName.toLowerCase():'';
-        if(tag==='input'||tag==='textarea'||tag==='select'||(target&&target.isContentEditable)||E.settingsDialog.open||!E.reviewScreen.classList.contains('active'))return;
+        if(tag==='input'||tag==='textarea'||tag==='select'||(target&&target.isContentEditable)||E.settingsDialog.open||E.syncDialog.open||!E.reviewScreen.classList.contains('active'))return;
         if(event.key==='1'||event.key==='2'||event.key==='3'||event.key==='0'){
           event.preventDefault();decide(event.key==='1'?'active':event.key==='2'?'paused':event.key==='3'?'completed':'dropped');
         }else if(event.key==='ArrowRight'){event.preventDefault();defer();}
@@ -957,12 +1130,15 @@
       }
       function bind(){
         E.setupForm.addEventListener('submit',connect);E.reload.addEventListener('click',loadFresh);E.nextRound.addEventListener('click',nextRound);E.emptyReload.addEventListener('click',loadFresh);E.retry.addEventListener('click',loadFresh);
+        E.syncButton.addEventListener('click',openSyncDialog);E.syncStripButton.addEventListener('click',openSyncDialog);E.openSync.addEventListener('click',openSyncDialog);E.runSync.addEventListener('click',syncPendingChanges);E.closeSync.addEventListener('click',closeSyncDialog);E.closeSyncBottom.addEventListener('click',closeSyncDialog);
+        E.syncList.addEventListener('click',function(event){var button=event.target.closest('[data-discard-operation]');if(button)discardPendingOperation(button.getAttribute('data-discard-operation'));});
         E.settings.addEventListener('click',openSettings);E.emptySettings.addEventListener('click',openSettings);E.errorSettings.addEventListener('click',openSettings);E.closeSettings.addEventListener('click',closeSettings);
         E.saveQuery.addEventListener('click',applyQuery);E.saveToken.addEventListener('click',saveToken);E.clearQueue.addEventListener('click',clearQueue);E.disconnect.addEventListener('click',disconnect);E.skip.addEventListener('click',defer);
         E.decisionGrid.addEventListener('click',function(event){var button=event.target.closest('[data-decision]');if(button)decide(button.getAttribute('data-decision'));});
         Array.prototype.forEach.call(document.querySelectorAll('[data-reveal]'),function(button){button.addEventListener('click',function(){reveal(button);});});
         Array.prototype.forEach.call(document.querySelectorAll('[data-presets]'),function(container){container.addEventListener('click',presetClick);});
         E.settingsDialog.addEventListener('click',function(event){if(event.target===E.settingsDialog)closeSettings();});
+        E.syncDialog.addEventListener('click',function(event){if(event.target===E.syncDialog)closeSyncDialog();});
         E.openLink.addEventListener('click',refreshOpenLinkTarget);
         if(window.matchMedia){
           var compactViewQuery=window.matchMedia('(max-width: 820px)');
@@ -970,23 +1146,32 @@
           else if(compactViewQuery.addListener)compactViewQuery.addListener(refreshOpenLinkTarget);
         }
         window.addEventListener('orientationchange',refreshOpenLinkTarget);
+        window.addEventListener('online',updateNetworkState);window.addEventListener('offline',updateNetworkState);
         document.addEventListener('visibilitychange',function(){if(!document.hidden)refreshOpenLinkTarget();});
         document.addEventListener('keydown',keydown);
       }
-      function init(){
-        normalizeSettings();normalizeState();cacheElements();bind();E.queryInput.value=settingsData.query;cacheSummary();
-        if(!token()){screen('setupScreen');setTimeout(function(){E.tokenInput.focus();},0);return;}
-        if(S.query!==settingsData.query){S=defaultState();saveState();}
-        if(S.queue.length){render();toast('Offener Rundenstand wiederhergestellt.','info');}
-        else if(S.lastLoadedAt)render();
-        else loadFresh();
+      async function init(){
+        normalizeSettings();cacheElements();bind();
+        var localState=clone(S),durable=await readDurableState();
+        if(durable&&typeof durable==='object'){
+          var localRevision=Number(localState.revision)||0,durableRevision=Number(durable.revision)||0;
+          var localTime=Date.parse(localState.modifiedAt||'')||0,durableTime=Date.parse(durable.modifiedAt||'')||0;
+          S=durableRevision>localRevision||(durableRevision===localRevision&&durableTime>=localTime)?durable:localState;
+        }
+        normalizeState();await saveState();
+        E.queryInput.value=settingsData.query;cacheSummary();renderSyncChrome();
+        if(S.queue.length){render();toast('Offline-Queue wiederhergestellt'+(S.outbox.length?' · '+S.outbox.length+' Änderungen warten auf Sync':'')+'.','info');}
+        else if(S.lastLoadedAt||S.outbox.length)render();
+        else if(!token()){screen('setupScreen');setTimeout(function(){E.tokenInput.focus();},0);}
+        else if(isOnline())loadFresh();else{render();toast('Offline: Sobald du online bist, kannst du eine Queue aus Readwise laden.','info');}
       }
 
       window.ReadwiseIRInboxCore={
         tokenizeQuery:tokenizeQuery,parseQuery:parseQuery,evaluateQuery:evaluateQuery,deriveServerParams:deriveServerParams,
         tagNames:tagNames,irMetadata:irMetadata,dueDescription:dueDescription,mixQueue:mixQueue,
         mergeIrBlock:mergeIrBlock,mergedTags:mergedTags,cleanDocument:cleanDocument,categoryLabel:categoryLabel,
-        readerWebUrl:readerWebUrl,isReaderWebUrl:isReaderWebUrl,androidReaderIntent:androidReaderIntent,shouldUseReaderApp:shouldUseReaderApp
+        readerWebUrl:readerWebUrl,isReaderWebUrl:isReaderWebUrl,androidReaderIntent:androidReaderIntent,shouldUseReaderApp:shouldUseReaderApp,
+        irFamilySignature:irFamilySignature,createPendingOperation:createPendingOperation,baselineStillMatches:baselineStillMatches,targetAlreadyApplied:targetAlreadyApplied,dueDateForPlan:dueDateForPlan
       };
       init();
       if('serviceWorker' in navigator&&/^https?:$/.test(window.location.protocol)){

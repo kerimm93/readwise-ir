@@ -1,4 +1,4 @@
-const CACHE_NAME = "readwise-ir-inbox-v4-20260809";
+const CACHE_NAME = "readwise-ir-inbox-v5-offline-20260811";
 const APP_SHELL = [
   "./",
   "./index.html",
