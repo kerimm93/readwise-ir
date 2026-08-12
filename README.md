@@ -1,38 +1,80 @@
 # Readwise IR Inbox
 
-Eine installierbare, offline-first Progressive Web App für gemischte Incremental-Reading-Sitzungen mit Readwise Reader. Eine Queue wird online zusammengestellt, lokal gespeichert und kann danach ohne API-Verbindung bearbeitet werden.
+Eine installierbare, offline-first Progressive Web App für gemischte Incremental-Reading-Sitzungen mit Readwise Reader. Ein großer Master-Vorrat wird einmal online zusammengestellt, lokal gespeichert, danach ohne API-Verbindung gefiltert und in kleinen Teilrunden bearbeitet.
 
 ## Was die App auswählt
 
-Eine Runde enthält je nach Einstellung:
+Ein Offline-Vorrat enthält je nach Einstellung:
 
 - fällige Dokumente mit `ir-active`
 - neue Dokumente ohne `ir-active`, `ir-paused`, `ir-completed` oder `ir-dropped`
 
-Standardmäßig werden 60 % Wiedervorlagen und 40 % Neuaufnahmen angestrebt. Fehlen in einem Topf genügend Treffer, füllt der andere die freien Plätze auf. Die Rundengröße bleibt auf 5 bis 50 Dokumente begrenzt.
+Standardmäßig werden 60 % Wiedervorlagen und 40 % Neuaufnahmen angestrebt. Fehlen in einem Topf genügend Treffer, füllt der andere die freien Plätze auf. Der Vorrat kann 10 bis 1.000 Dokumente enthalten; sichtbar sind davon jeweils nur 5 bis 50 Dokumente pro Teilrunde. Die Voreinstellung ist 100 Dokumente im Vorrat und 10 pro Teilrunde. Ein Download von 1.000 Dokumenten kann wegen der Rate-Limits und mehrerer API-Seiten deutlich dauern, wird danach aber nur bei einem bewusst angeforderten neuen Snapshot wiederholt.
+
+Wenn eine Teilrunde endet, öffnet **Nächste … passende** ohne Netzwerkzugriff den nächsten lokalen Stapel. Das funktioniert auch dann, wenn frühere Entscheidungen noch nicht mit Readwise abgeglichen wurden. Erst wenn der gesamte Master-Vorrat verbraucht ist, muss eine neue Auswahl aus Readwise geladen werden.
+
+## Download-Filter und lokale Ansichtsfilter
+
+Die Eingabe folgt der [offiziellen Reader-Filtersyntax](https://docs.readwise.io/reader/guides/filtering/syntax-guide). Beispiele:
+
+- `category:epub OR category:pdf`
+- `tag:shortlist`
+- `category__not:video AND in:later`
+- `progress__gt:3 AND minutes__gt:20`
+
+Die offizielle Schreibweise enthält kein Leerzeichen nach dem Doppelpunkt. Ein versehentlich eingegebenes `category: epub` wird beim Speichern komfortabel zu `category:epub` normalisiert. `category` beziehungsweise der Alias `type` sind gültige Reader-Felder.
+
+`shortlist` kann in Reader zwei verschiedene Dinge bezeichnen:
+
+- `in:shortlist` beziehungsweise `location:shortlist` ist der offizielle Bibliotheksort der Shortlist-Konfiguration.
+- `tag:shortlist` ist ein Dokument-Tag.
+
+In der hier vorgesehenen persönlichen Ablage wird Shortlist als Dokument-Tag verwendet; deshalb setzt der Standardknopf **Shortlist-Tag** den Ausdruck `tag:shortlist`. Der Standortausdruck `in:shortlist` bleibt weiterhin gültig, wenn er manuell eingegeben wird.
+
+Der **Download-Filter** bestimmt nur, welche Dokumente beim ausdrücklichen Nachladen aus Readwise in den Master-Vorrat gelangen. Für einen vielseitigen Vorrat bietet sich beispielsweise `in:inbox OR in:later` an. Reader-Filter mit mehreren API-seitig filterbaren `OR`-Zweigen werden in getrennte API-Abfragen zerlegt und anschließend vereinigt. Die vollständige Bedingung wird zusätzlich lokal auf jedes Ergebnis angewendet.
+
+Der davon getrennte **lokale Ansichtsfilter** wird auf den bereits gespeicherten Master-Vorrat angewandt. Die Schnellleiste bietet unter anderem Alle, Videos, Ohne Videos, EPUB/PDF, Inbox, Later sowie Inbox + Later. Ein Wechsel erzeugt sofort eine neue sichtbare Teilrunde, ruft die API nicht auf und löscht die ausgeblendeten Dokumente nicht. Eigene lokale Filter lassen sich unter einem frei wählbaren Namen speichern und erscheinen ebenfalls in der Schnellleiste.
+
+Filter auf Standort, Kategorie und Tags können bereits von der Reader-API eingegrenzt werden und laden deshalb besonders effizient. Bedingungen, die erst auf den gelieferten Dokumentdaten geprüft werden können, dürfen dagegen mehr API-Seiten durchsuchen und entsprechend länger dauern; die App bricht diese Suche nicht nach einer kleinen, willkürlichen Seitenzahl ab.
 
 ## Offline-first-Ablauf
 
-1. **Neue Offline-Queue laden** ruft Readwise auf und speichert bis zu 50 vollständige Dokument-Snapshots lokal.
+1. **Neuen Offline-Vorrat laden** ruft Readwise auf und speichert bis zu 1.000 vollständige Dokument-Snapshots lokal.
 2. Jede Statusentscheidung wird zuerst dauerhaft auf dem Gerät gespeichert. Die Karte verschwindet erst nach erfolgreicher lokaler Speicherung aus der Queue.
 3. Die App zeigt jederzeit, wie viele Änderungen noch nicht übertragen wurden.
 4. **Mit Readwise abgleichen** prüft jedes betroffene Dokument frisch und überträgt die vorgemerkten Änderungen einzeln.
-5. Fehlgeschlagene oder konfliktbehaftete Änderungen bleiben mit Fehlermeldung im lokalen Ausgang. Ein neuer Queue-Snapshot wird erst zugelassen, wenn dieser Ausgang leer ist.
+5. Fehlgeschlagene oder konfliktbehaftete Änderungen bleiben mit Fehlermeldung im lokalen Ausgang. Weitere Teilrunden aus dem vorhandenen Vorrat bleiben möglich. Ein neuer Readwise-Snapshot wird erst zugelassen, wenn dieser Ausgang leer ist.
 
 Ein Konflikt oder dauerhaft fehlgeschlagener Eintrag kann erneut geprüft oder nach ausdrücklicher Bestätigung lokal verworfen werden. Beim Verwerfen bleibt der aktuelle Readwise-Stand unangetastet. Dadurch blockiert ein nicht mehr abrufbares Reader-Dokument keine späteren Queues dauerhaft.
 
 Das absolute Fälligkeitsdatum wird beim Entscheiden festgelegt. Eine offline gewählte Wiedervorlage „in 7 Tagen“ verschiebt sich daher nicht, wenn der Abgleich erst später stattfindet.
 
-Beim Öffnen der App findet niemals automatisch ein API-Aufruf statt. Sie stellt zuerst ausschließlich den vorhandenen lokalen Stand wieder her. Ist noch keine Queue auf diesem Gerät gespeichert, bleibt die App auf der lokalen Leeransicht, bis **Neue Offline-Queue laden** ausdrücklich betätigt wird. Das gilt auch dann, wenn der Browser seinen Verbindungsstatus unzuverlässig meldet.
+Beim Öffnen der App findet niemals automatisch ein API-Aufruf statt. Sie stellt zuerst ausschließlich den vorhandenen lokalen Stand wieder her. Ist noch kein Vorrat auf diesem Gerät gespeichert, bleibt die App auf der lokalen Leeransicht, bis **Neuen Offline-Vorrat laden** ausdrücklich betätigt wird. Das gilt auch dann, wenn der Browser seinen Verbindungsstatus unzuverlässig meldet.
 
 ## Getrennte Warteschleifen auf mehreren Geräten
 
-Name, Filter, Mischverhältnis, Queue und lokaler Änderungsausgang gelten nur im jeweiligen Browser beziehungsweise in der jeweiligen PWA-Installation. Dadurch kann beispielsweise gelten:
+Name, Filterprofile, Mischverhältnis, E‑Ink-Modus, Geräte-Spur, Vorrat und lokaler Änderungsausgang gelten nur im jeweiligen Browser beziehungsweise in der jeweiligen PWA-Installation. Dadurch kann beispielsweise gelten:
 
 - Smartphone: `category:video AND in:later`
-- E‑Paper-Tablet: `category__not:video AND in:later`
+- E‑Paper-Tablet: E‑Ink-Modus plus `in:later`
 
-Die Filter sollten möglichst disjunkt sein. Überschneiden sich Queues dennoch, verhindert die Konfliktprüfung ein stilles Überschreiben desselben IR-Zustands. Es gibt keinen automatischen geräteübergreifenden Queue-Sync; Readwise bleibt die gemeinsame Datenbasis nach einem bewussten Abgleich.
+Der E‑Ink-Modus schaltet zusätzlich auf eine kontrastreiche, animationsfreie Darstellung und entfernt beim Zusammenstellen und lokalen Filtern alle Dokumente mit Kategorie `video` sowie Quellen von YouTube, `youtu.be` und `youtube-nocookie.com`. Diese Geräte-Regel wird getrennt von Download- und Ansichtsfilter angewandt und in der Einstellungsansicht ausgewiesen.
+
+Für sich überschneidende Filter bietet die App **Geräte-Spuren**. Auf allen beteiligten Geräten wird dieselbe Anzahl Spuren gewählt, aber jedes Gerät erhält eine andere Spurnummer. Eine stabile Hashfunktion weist jede Dokument-ID genau einer Spur zu. Dadurch bleiben die Vorräte auch dann disjunkt, wenn sie zu unterschiedlichen Zeitpunkten geladen und danach lange offline benutzt werden. Eine bloße Reihenfolge „älteste auf Gerät A, neueste auf Gerät B“ wäre nicht konfliktfest, weil die API-Snapshots zu verschiedenen Zeitpunkten überlappen können.
+
+Die Spurzahl sollte nur geändert werden, wenn alte Vorräte abgearbeitet oder bewusst verworfen wurden. Ist keine Aufteilung gewählt, sollten die Filter möglichst disjunkt sein. Überschneiden sich Vorräte dennoch, verhindert die bestehende Konfliktprüfung ein stilles Überschreiben desselben IR-Zustands. Es gibt keinen automatischen geräteübergreifenden Queue-Sync; Readwise bleibt die gemeinsame Datenbasis nach einem bewussten Abgleich.
+
+## Gerätekonfiguration sichern
+
+Unter **Einstellungen → Gerätekonfiguration** kann die Konfiguration als lesbare JSON-Datei exportiert und später wieder importiert werden. Enthalten sind:
+
+- Name des Geräts beziehungsweise der Warteschleife
+- Download-Filter, lokaler Ansichtsfilter und gespeicherte lokale Filterprofile
+- Vorrats- und Teilrundengröße
+- Fällig/Neu-Mischung und Standardintervall
+- Öffnungsmodus, E‑Ink-Modus und Geräte-Spur
+
+Nicht exportiert werden Access Token, Dokument-Snapshots, Offline-Vorrat oder ausstehende Änderungen. Die JSON-Datei kann deshalb beispielsweise in Google Drive gesichert werden. Wird dieselbe Datei zum Einrichten eines weiteren Geräts benutzt, muss dessen Spurnummer anschließend auf eine andere Spur gestellt werden.
 
 Mehrere gleichzeitig geöffnete Ansichten derselben GitHub-Pages-Installation – etwa die installierte PWA und ein Browser-Tab – teilen dagegen denselben lokalen Stand. Zustandsänderungen werden geräteweit serialisiert, lesen unmittelbar vor der Änderung den neuesten IndexedDB-Snapshot und informieren die anderen offenen Ansichten anschließend über den neuen Stand. So bleiben Queue- und Ausgangsänderungen beider Fenster erhalten.
 
@@ -88,9 +130,9 @@ Nach dem ersten erfolgreichen Online-Aufruf startet die App-Shell direkt aus dem
 
 ## Offline-Verhalten
 
-Nach dem ersten erfolgreichen Laden kann die gesamte Oberfläche offline geöffnet werden. Eine bereits geladene Queue lässt sich offline sichten und entscheiden; auch Intervall, Priorität und Phase werden lokal gespeichert. Nur diese Vorgänge benötigen Internet:
+Nach dem ersten erfolgreichen Laden kann die gesamte Oberfläche offline geöffnet werden. Ein bereits geladener Vorrat lässt sich in beliebig vielen lokalen Teilrunden sichten und entscheiden; auch Intervall, Priorität und Phase werden lokal gespeichert. Nur diese Vorgänge benötigen Internet:
 
-- eine neue Queue aus Readwise laden
+- einen neuen Offline-Vorrat aus Readwise laden
 - lokale Entscheidungen mit Readwise abgleichen
 - ein Dokument öffnen, sofern es nicht bereits in Reader verfügbar ist
 

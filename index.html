@@ -60,11 +60,13 @@
     .token::placeholder,.query::placeholder{color:var(--ink-quiet)}.token:focus,.query:focus,.select:focus,.number:focus{border-color:var(--accent);outline:3px solid var(--accent-soft)}
     .reveal{position:absolute;top:3px;right:3px;height:44px;padding:0 11px;border:0;border-radius:5px;color:var(--ink-mid);background:transparent;cursor:pointer;font-size:12px;font-weight:750}.reveal:hover{color:var(--ink);background:var(--surface-3)}
     .presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.preset{min-height:34px;padding:0 10px;border-color:var(--rule);color:var(--ink-mid);background:var(--surface);font-size:12px;font-weight:750}.preset:hover{border-color:var(--accent-line);color:var(--accent-deep);background:var(--accent-soft)}
+    .saved-filter-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:10px}.saved-filter-row .token{height:44px;padding-right:12px}.saved-filter-title{margin:13px 0 0;color:var(--ink-dim);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.saved-filter-empty{margin-top:8px;color:var(--ink-dim);font-size:11px}.effective-filter{margin-top:10px;padding:9px 10px;border:1px solid var(--rule);border-radius:var(--r-sm);color:var(--ink-mid);background:var(--surface-2);font-size:11px;line-height:1.5}.effective-filter strong{color:var(--ink)}
     .hint{margin:8px 0 0;color:var(--ink-dim);font-size:11px;line-height:1.55}.hint a{color:var(--accent-deep)}
     .setup-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:21px}.link{color:var(--accent-deep);text-decoration-color:var(--accent-line);text-underline-offset:3px}.link:hover{color:var(--accent)}
     .privacy{display:flex;gap:9px;margin:18px 0 0;padding-top:17px;border-top:1px solid var(--rule-faint);color:var(--ink-dim);font-size:12px;line-height:1.55}.privacy svg{width:16px;height:16px;flex:0 0 auto;margin-top:1px;stroke:currentColor}
     .status{min-height:20px;margin:12px 0 0;color:var(--danger);font-size:12px}.status:empty{min-height:0;margin-top:0}
-    .sync-strip{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:-8px 0 20px;padding:10px 12px;border:1px solid var(--rule);border-radius:var(--r-sm);background:rgba(251,247,238,.72);color:var(--ink-mid);font-size:12px}.sync-strip-copy{display:flex;align-items:center;gap:9px;min-width:0}.network-dot{width:8px;height:8px;flex:0 0 auto;border-radius:50%;background:var(--ok)}.network-dot.offline{background:var(--paused)}.sync-strip strong{color:var(--ink);font-weight:800}.sync-strip .btn{min-height:36px;padding:0 11px;font-size:12px}.sync-badge{display:inline-grid;min-width:20px;height:20px;margin-left:5px;padding:0 5px;place-items:center;border-radius:99px;color:#fff;background:var(--accent);font:800 10px var(--mono)}
+    .sync-strip{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:-8px 0 12px;padding:10px 12px;border:1px solid var(--rule);border-radius:var(--r-sm);background:rgba(251,247,238,.72);color:var(--ink-mid);font-size:12px}.sync-strip-copy{display:flex;align-items:center;gap:9px;min-width:0}.network-dot{width:8px;height:8px;flex:0 0 auto;border-radius:50%;background:var(--ok)}.network-dot.offline{background:var(--paused)}.sync-strip strong{color:var(--ink);font-weight:800}.sync-strip .btn{min-height:36px;padding:0 11px;font-size:12px}.sync-badge{display:inline-grid;min-width:20px;height:20px;margin-left:5px;padding:0 5px;place-items:center;border-radius:99px;color:#fff;background:var(--accent);font:800 10px var(--mono)}
+    .local-filter-strip{margin:0 0 20px;padding:10px 12px;border:1px solid var(--rule);border-radius:var(--r-sm);background:rgba(251,247,238,.72)}.local-filter-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;color:var(--ink-mid);font-size:12px}.local-filter-head strong{color:var(--ink)}.local-filter-buttons{display:flex;flex-wrap:wrap;gap:7px}.local-filter-buttons .preset.active{border-color:var(--accent);color:var(--surface);background:var(--accent)}
     .loading{display:none;min-height:56vh;place-items:center;text-align:center}.loading.active{display:grid}.spinner{position:relative;width:54px;height:54px;margin:0 auto 20px;border:1px solid var(--rule-strong);border-radius:50%;background:var(--surface)}.spinner:after{position:absolute;inset:-1px;border:2px solid transparent;border-top-color:var(--accent);border-radius:50%;content:"";animation:spin .78s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.loading h1{margin:0;font:700 27px var(--serif)}.loading p{margin:8px 0 0;color:var(--ink-dim);font-size:14px}
     .review-card{overflow:hidden}.document-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;padding:27px 30px 23px;border-bottom:1px solid var(--rule)}
     .type{margin:0 0 8px;color:var(--ink-dim);font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.title{margin:0;font:700 clamp(25px,4vw,36px)/1.14 var(--serif);letter-spacing:-.028em;overflow-wrap:anywhere}
@@ -87,6 +89,7 @@
     .state{width:min(100%,650px);margin:66px auto 0;padding:38px;text-align:center}.symbol{display:grid;width:58px;height:58px;margin:0 auto 22px;place-items:center;border:1px solid var(--rule-strong);border-radius:50%;color:var(--accent);background:var(--surface-2);font:27px var(--serif)}.state-copy{max-width:490px;margin:16px auto 24px;color:var(--ink-mid);line-height:1.7}.state-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:9px}
     .toasts{position:fixed;z-index:30;right:max(20px,env(safe-area-inset-right));bottom:max(22px,env(safe-area-inset-bottom));width:min(390px,calc(100vw - 40px));pointer-events:none}.toast{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--rule-strong);border-radius:var(--r-sm);background:var(--surface);box-shadow:0 14px 38px rgba(41,37,31,.14);font-size:13px;font-weight:700}.toast-dot{width:8px;height:8px;flex:0 0 auto;margin-top:6px;border-radius:50%;background:var(--ok)}.toast.error .toast-dot{background:var(--danger)}.toast.info .toast-dot{background:var(--complete)}
     dialog{width:min(620px,calc(100vw - 32px));max-height:calc(100vh - 34px);padding:0;overflow:auto;border:1px solid var(--rule-strong);border-radius:var(--r-lg);color:var(--ink);background:var(--surface);box-shadow:0 30px 90px rgba(41,37,31,.25)}dialog::backdrop{background:rgba(41,37,31,.42);backdrop-filter:blur(2px)}.dialog-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--rule)}.dialog-head h2{margin:0;font:700 24px var(--serif)}.dialog-body{padding:22px}.dialog-section+.dialog-section{margin-top:24px;padding-top:22px;border-top:1px solid var(--rule-faint)}.dialog-section h3{margin:0 0 5px;font-size:13px}.dialog-section p{margin:0;color:var(--ink-dim);font-size:12px;line-height:1.55}.dialog-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.check{display:flex;align-items:flex-start;gap:9px;margin-top:15px;color:var(--ink-mid);font-size:12px;line-height:1.5}.check input{width:17px;height:17px;margin-top:1px;accent-color:var(--accent)}
+    body.eink-mode{--paper:#F4F4ED;--surface:#FFFFFF;--surface-2:#F1F1EB;--surface-3:#E4E4DD;--ink:#111;--ink-mid:#343434;--ink-dim:#555;--ink-quiet:#777;--rule:#B8B8B0;--rule-strong:#888;--rule-faint:#D5D5CF;--accent:#263A2E;--accent-hi:#263A2E;--accent-deep:#111;--accent-soft:rgba(0,0,0,.07);--accent-line:rgba(0,0,0,.42);background:var(--paper)}body.eink-mode *,body.eink-mode *:before,body.eink-mode *:after{animation:none!important;transition:none!important}body.eink-mode .panel,body.eink-mode dialog,body.eink-mode .toast{box-shadow:none}body.eink-mode .decision-section{background:var(--paper);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
     .danger{color:var(--danger)}
     .sync-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:18px}.sync-stat{padding:12px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--surface-2)}.sync-stat span{display:block;color:var(--ink-dim);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.sync-stat strong{display:block;margin-top:5px;font:700 22px var(--serif)}.sync-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}.sync-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:11px 12px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--surface-2)}.sync-item-title{overflow:hidden;font-size:12px;font-weight:800;text-overflow:ellipsis;white-space:nowrap}.sync-item-meta{margin-top:4px;color:var(--ink-dim);font-size:10px;line-height:1.45}.sync-item-side{display:flex;align-items:flex-end;flex-direction:column;gap:7px}.sync-state{align-self:flex-end;padding:4px 7px;border-radius:99px;color:var(--ink-mid);background:var(--surface-3);font:800 9px var(--mono);text-transform:uppercase}.sync-state.conflict,.sync-state.error{color:var(--danger);background:#FBE8E1}.discard-change{padding:0;border:0;color:var(--danger);background:transparent;cursor:pointer;font-size:9px;text-decoration:underline;text-underline-offset:2px}.empty-sync{padding:18px;border:1px dashed var(--rule-strong);border-radius:var(--r-sm);color:var(--ink-dim);font-size:12px;text-align:center}.queue-name{font-weight:800}
     @media(max-width:820px){
@@ -123,6 +126,19 @@
         <div class="sync-strip-copy"><span class="network-dot" id="networkDot" aria-hidden="true"></span><span id="networkCopy">Online</span><span aria-hidden="true">·</span><span><strong id="pendingCopy">0</strong> lokale Änderungen offen</span><span aria-hidden="true">·</span><span class="queue-name" id="queueNameCopy">Dieses Gerät</span></div>
         <button class="btn secondary" id="syncStripButton" type="button">Mit Readwise abgleichen</button>
       </section>
+      <section class="local-filter-strip" id="localFilterStrip" hidden aria-label="Lokale Offline-Ansicht">
+        <div class="local-filter-head"><span><strong>Lokale Ansicht:</strong> <span id="localFilterCopy">Alle Dokumente</span></span><span id="localMatchCopy">0 verfügbar</span></div>
+        <div class="local-filter-buttons" data-local-presets>
+          <button class="preset" type="button" data-local-query="">Alle</button>
+          <button class="preset" type="button" data-local-query="category:video">Videos</button>
+          <button class="preset" type="button" data-local-query="category__not:video">Ohne Videos</button>
+          <button class="preset" type="button" data-local-query="category:epub OR category:pdf">EPUB/PDF</button>
+          <button class="preset" type="button" data-local-query="in:inbox">Inbox</button>
+          <button class="preset" type="button" data-local-query="in:later">Later</button>
+          <button class="preset" type="button" data-local-query="in:inbox OR in:later">Inbox + Later</button>
+        </div>
+        <div class="local-filter-buttons" data-local-saved-filter-buttons></div>
+      </section>
       <section class="screen setup" id="setupScreen">
         <p class="eyebrow">Incremental-Reading-Sitzung</p>
         <h1>Altes fortsetzen.<br>Neues entdecken.</h1>
@@ -138,14 +154,16 @@
             <div class="presets" data-presets>
               <button class="preset" type="button" data-query="in:later">Later</button>
               <button class="preset" type="button" data-query="in:inbox">Inbox</button>
-              <button class="preset" type="button" data-query="in:shortlist">Shortlist</button>
+              <button class="preset" type="button" data-query="tag:shortlist">Shortlist-Tag</button>
+              <button class="preset" type="button" data-query="category:epub OR category:pdf">Books &amp; PDFs</button>
+              <button class="preset" type="button" data-query="category:video">Videos</button>
               <button class="preset" type="button" data-query="feed:true AND seen:false">Ungesehener Feed</button>
-              <button class="preset" type="button" data-query="progress__gt:3 AND minutes__gt:20 AND (in:inbox OR in:later OR in:shortlist)">Unfertige Longreads</button>
+              <button class="preset" type="button" data-query="progress__gt:3 AND minutes__gt:20 AND (in:inbox OR in:later OR tag:shortlist)">Unfertige Longreads</button>
               <button class="preset" type="button" data-query="seen:false AND (in:later OR feed:true)">Digest-Pool*</button>
             </div>
-            <p class="hint">Unterstützt die Reader-Syntax, soweit die benötigten Metadaten über die öffentliche Dokument-API verfügbar sind; nicht verfügbare Filter werden ausdrücklich gemeldet. *Der echte personalisierte Daily Digest ist über die API nicht abrufbar, daher bildet der Digest-Pool nur dessen ungelesenen Later-/Feed-Pool nach. <a href="https://docs.readwise.io/reader/guides/filtering/syntax-guide" target="_blank" rel="noreferrer">Syntaxhilfe ↗</a></p>
+            <p class="hint">Verwendet die offizielle Reader-Syntax ohne Leerzeichen nach dem Doppelpunkt; die App korrigiert ein versehentliches Leerzeichen beim Speichern. In deinem Reader ist <code>shortlist</code> ein Dokument-Tag, daher verwendet der Standardfilter <code>tag:shortlist</code>. *Der echte personalisierte Daily Digest ist über die API nicht abrufbar. <a href="https://docs.readwise.io/reader/guides/filtering/syntax-guide" target="_blank" rel="noreferrer">Syntaxhilfe ↗</a></p>
           </div>
-          <div class="setup-actions"><a class="link" href="https://readwise.io/access_token" target="_blank" rel="noreferrer">Token bei Readwise holen ↗</a><button class="btn primary" id="connect" type="submit">Verbinden &amp; Offline-Queue laden</button></div>
+          <div class="setup-actions"><a class="link" href="https://readwise.io/access_token" target="_blank" rel="noreferrer">Token bei Readwise holen ↗</a><button class="btn primary" id="connect" type="submit">Verbinden &amp; Offline-Vorrat laden</button></div>
           <p class="status" id="setupStatus" role="alert"></p>
           <p class="privacy"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Token, Filter, Queue und noch nicht synchronisierte Entscheidungen bleiben lokal auf diesem Gerät. Die App sendet Anfragen ausschließlich direkt an Readwise.</span></p>
         </form>
@@ -219,27 +237,58 @@
         <p style="margin-top:9px">Der Name, Filter und lokale Queue gelten nur auf diesem Gerät. Verwende möglichst disjunkte Filter, etwa Videos auf dem Smartphone und lange Texte auf dem E‑Paper-Gerät.</p>
       </section>
       <section class="dialog-section">
-        <label class="label" for="settingsQuery">Reader-Filter</label>
+        <label class="label" for="settingsQuery">Download-Filter für neue Offline-Vorräte</label>
         <textarea class="query" id="settingsQuery" spellcheck="false"></textarea>
         <div class="presets" data-presets>
           <button class="preset" type="button" data-query="in:later">Later</button>
           <button class="preset" type="button" data-query="in:inbox">Inbox</button>
-          <button class="preset" type="button" data-query="in:shortlist">Shortlist</button>
+          <button class="preset" type="button" data-query="tag:shortlist">Shortlist-Tag</button>
+          <button class="preset" type="button" data-query="category:epub OR category:pdf">Books &amp; PDFs</button>
+          <button class="preset" type="button" data-query="category:video">Videos</button>
           <button class="preset" type="button" data-query="feed:true AND seen:false">Ungesehener Feed</button>
-          <button class="preset" type="button" data-query="progress__gt:3 AND minutes__gt:20 AND (in:inbox OR in:later OR in:shortlist)">Unfertige Longreads</button>
+          <button class="preset" type="button" data-query="progress__gt:3 AND minutes__gt:20 AND (in:inbox OR in:later OR tag:shortlist)">Unfertige Longreads</button>
           <button class="preset" type="button" data-query="seen:false AND (in:later OR feed:true)">Digest-Pool*</button>
         </div>
-        <div class="dialog-actions"><button class="btn primary" id="saveQuery" type="button">Einstellungen speichern</button></div><p class="status" id="queryStatus" role="alert"></p>
+        <div class="effective-filter" id="effectiveFilter"><strong>Effektive Auswahl:</strong> Der Reader-Filter gilt ohne zusätzliche Geräte-Regel.</div>
+        <p style="margin-top:9px">Dieser Filter wird nur beim bewussten Nachladen aus Readwise verwendet. Für einen vielseitigen Vorrat eignet sich zum Beispiel <code>in:inbox OR in:later</code>.</p>
+      </section>
+      <section class="dialog-section">
+        <label class="label" for="localQuery">Lokaler Ansichtsfilter</label>
+        <textarea class="query" id="localQuery" spellcheck="false" placeholder="Leer = alle lokal gespeicherten Dokumente"></textarea>
+        <div class="presets" data-local-presets>
+          <button class="preset" type="button" data-local-query="">Alle</button>
+          <button class="preset" type="button" data-local-query="category:video">Videos</button>
+          <button class="preset" type="button" data-local-query="category__not:video">Ohne Videos</button>
+          <button class="preset" type="button" data-local-query="category:epub OR category:pdf">EPUB/PDF</button>
+          <button class="preset" type="button" data-local-query="in:inbox">Inbox</button>
+          <button class="preset" type="button" data-local-query="in:later">Later</button>
+          <button class="preset" type="button" data-local-query="in:inbox OR in:later">Inbox + Later</button>
+        </div>
+        <p class="saved-filter-title">Eigene lokale Filter auf diesem Gerät</p><div class="presets" data-local-saved-filter-buttons></div>
+        <div class="saved-filter-row"><input class="token" id="filterName" type="text" maxlength="50" placeholder="Name, z. B. Große PDFs"><button class="btn secondary" id="saveFilter" type="button">Lokalen Filter speichern</button></div>
+        <div class="dialog-actions"><button class="btn secondary danger" id="deleteFilter" type="button" hidden>Ausgewählten Filter löschen</button></div>
+        <p style="margin-top:9px">Dieser Filter wird sofort ausschließlich auf den bereits gespeicherten Vorrat angewandt. Dabei gibt es keinen API-Aufruf und ausgeschlossene Dokumente bleiben für einen späteren Filterwechsel erhalten.</p>
+        <div class="dialog-actions"><button class="btn primary" id="saveQuery" type="button">Einstellungen &amp; lokale Ansicht anwenden</button></div><p class="status" id="queryStatus" role="alert"></p>
       </section>
       <section class="dialog-section">
         <div class="settings-grid">
-          <div><label class="label" for="roundSize">Dokumente pro Runde</label><input class="number" id="roundSize" type="number" min="5" max="50" inputmode="numeric"></div>
+          <div><label class="label" for="cacheSize">Offline-Vorrat</label><input class="number" id="cacheSize" type="number" min="10" max="1000" step="50" inputmode="numeric"></div>
+          <div><label class="label" for="roundSize">Dokumente pro Teilrunde</label><input class="number" id="roundSize" type="number" min="5" max="50" inputmode="numeric"></div>
           <div><label class="label" for="reviewShare">Mischung</label><select class="select" id="reviewShare"><option value="80">80 % fällig · 20 % neu</option><option value="60">60 % fällig · 40 % neu</option><option value="40">40 % fällig · 60 % neu</option><option value="20">20 % fällig · 80 % neu</option></select></div>
           <div><label class="label" for="dueDays">Standard-Intervall</label><select class="select" id="dueDays"><option value="0">heute</option><option value="1">morgen</option><option value="3">in 3 Tagen</option><option value="7">in 7 Tagen</option><option value="14">in 14 Tagen</option><option value="30">in 30 Tagen</option><option value="60">in 60 Tagen</option><option value="90">in 90 Tagen</option><option value="180">in 180 Tagen</option></select></div>
           <div><label class="label" for="openMode">Dokumente öffnen</label><select class="select" id="openMode"><option value="auto">Automatisch</option><option value="app">Reader-App (Android)</option><option value="web">Webversion</option></select></div>
+          <div><label class="label" for="laneCount">Geräte-Aufteilung</label><select class="select" id="laneCount"><option value="1">Keine Aufteilung</option><option value="2">2 getrennte Spuren</option><option value="3">3 getrennte Spuren</option><option value="4">4 getrennte Spuren</option></select></div>
+          <div><label class="label" for="laneIndex">Spur dieses Geräts</label><select class="select" id="laneIndex"><option value="0">Spur 1</option></select></div>
         </div>
+        <label class="check"><input id="eInkMode" type="checkbox"><span><strong>E‑Ink-Modus</strong><br>Hoher Kontrast, keine Animationen; Videos sowie YouTube-/youtu.be-Quellen werden beim Download und in lokalen Ansichten ausgeschlossen.</span></label>
         <p style="margin-top:9px">Die App mischt fällige <code>ir-active</code>-Dokumente mit neuen Dokumenten ohne jeden IR-Status. Fehlen Treffer in einem Topf, füllt der andere die freien Plätze auf.</p>
+        <p style="margin-top:9px">Für mehrere länger offline genutzte Geräte wählst du überall dieselbe Anzahl Spuren, aber auf jedem Gerät eine andere Spur. Die stabile Dokument-ID teilt auch überlappende Filter deterministisch auf; eine bloße Sortierung nach alt/neu wäre dafür nicht konfliktfest.</p>
         <p style="margin-top:9px">Status, Termin, Priorität und Phase werden als austauschbare <code>ir-*</code>-Tags gespiegelt. Der ausführliche Zustand bleibt im geschützten IR-Block der Document-Note.</p>
+      </section>
+      <section class="dialog-section">
+        <h3>Gerätekonfiguration</h3><p>Exportiert Filterprofile und Einstellungen ohne Access Token, Offline-Dokumente oder ausstehende Readwise-Änderungen.</p>
+        <div class="dialog-actions"><button class="btn secondary" id="exportConfig" type="button">Konfiguration als JSON</button><button class="btn secondary" id="importConfig" type="button">JSON importieren</button><input id="importConfigFile" type="file" accept="application/json,.json" hidden></div>
+        <p class="status" id="configStatus" role="alert"></p>
       </section>
       <section class="dialog-section">
         <label class="label" for="settingsToken">Readwise Access Token</label>
@@ -294,12 +343,14 @@
         completed:{tag:'ir-completed',label:'Abgeschlossen'},
         dropped:{tag:'ir-dropped',label:'Verworfen'}
       };
-      var DEFAULT_SETTINGS={query:'in:later',roundSize:25,dueDays:3,reviewShare:60,openMode:'auto',queueName:'Dieses Gerät'};
+      var CONFIG_SCHEMA='readwise-ir-device-config';
+      var DEFAULT_SETTINGS={query:'in:later',localQuery:'',roundSize:10,cacheSize:100,dueDays:3,reviewShare:60,openMode:'auto',queueName:'Dieses Gerät',savedFilters:[],eInkMode:false,laneCount:1,laneIndex:0};
       var busy=false;
       var lastListRequestAt=0;
       var settingsData=loadJson(SETTINGS_KEY,DEFAULT_SETTINGS);
       var S=loadJson(STATE_KEY,defaultState());
       var E={};
+      var selectedSavedFilterId='';
       var toastTimer=null;
       var stateDbPromise=null;
       var persistChain=Promise.resolve();
@@ -309,7 +360,7 @@
       var contextId='C'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
       var stateChannel=typeof window.BroadcastChannel==='function'?new window.BroadcastChannel(STATE_CHANNEL_NAME):null;
 
-      function defaultState(){return{version:3,revision:0,queue:[],dueReserve:[],newReserve:[],outbox:[],sessionTotal:0,deferred:0,lastLoadedAt:'',lastSyncAt:'',lastSyncSummary:'',dueCursor:null,newCursor:null,dueHasMore:true,newHasMore:true,query:'',serverParams:{},modifiedAt:''};}
+      function defaultState(){return{version:5,revision:0,queue:[],offlineArchive:[],offlineReserve:[],dueReserve:[],newReserve:[],outbox:[],sessionTotal:0,deferred:0,lastLoadedAt:'',lastSyncAt:'',lastSyncSummary:'',dueCursor:null,newCursor:null,dueHasMore:true,newHasMore:true,query:'',profileSignature:'',serverParams:{},serverVariants:[],modifiedAt:''};}
       function clone(value){return JSON.parse(JSON.stringify(value));}
       function loadJson(key,fallback){
         try{
@@ -457,17 +508,35 @@
         });
       }
       function normalizeSettings(){
-        settingsData.query=String(settingsData.query||DEFAULT_SETTINGS.query).trim();
+        settingsData.query=canonicalizeQuery(settingsData.query||DEFAULT_SETTINGS.query);
+        settingsData.localQuery=canonicalizeQuery(settingsData.localQuery||'');
+        if(settingsData.localQuery){try{parseQuery(settingsData.localQuery);}catch(error){settingsData.localQuery='';}}
         settingsData.queueName=String(settingsData.queueName||DEFAULT_SETTINGS.queueName).replace(/[\r\n]+/g,' ').trim().slice(0,60)||DEFAULT_SETTINGS.queueName;
         settingsData.roundSize=clampInt(settingsData.roundSize,5,50,DEFAULT_SETTINGS.roundSize);
+        settingsData.cacheSize=clampInt(settingsData.cacheSize,10,1000,DEFAULT_SETTINGS.cacheSize);
+        if(settingsData.cacheSize<settingsData.roundSize)settingsData.cacheSize=settingsData.roundSize;
         settingsData.dueDays=DUE_OPTIONS.indexOf(Number(settingsData.dueDays))!==-1?Number(settingsData.dueDays):DEFAULT_SETTINGS.dueDays;
         settingsData.reviewShare=[20,40,60,80].indexOf(Number(settingsData.reviewShare))!==-1?Number(settingsData.reviewShare):DEFAULT_SETTINGS.reviewShare;
         settingsData.openMode=['auto','app','web'].indexOf(String(settingsData.openMode))!==-1?String(settingsData.openMode):DEFAULT_SETTINGS.openMode;
+        settingsData.eInkMode=!!settingsData.eInkMode;
+        settingsData.laneCount=clampInt(settingsData.laneCount,1,4,1);
+        settingsData.laneIndex=clampInt(settingsData.laneIndex,0,settingsData.laneCount-1,0);
+        var seen={};settingsData.savedFilters=(Array.isArray(settingsData.savedFilters)?settingsData.savedFilters:[]).map(function(item,index){
+          var name=String(item&&item.name||'').replace(/[\r\n]+/g,' ').trim().slice(0,50),query=canonicalizeQuery(item&&item.query||'');
+          if(!name||!query)return null;
+          try{parseQuery(query);}catch(error){return null;}
+          var id=String(item&&item.id||'F'+index+'-'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-')).slice(0,80);
+          if(seen[id])id+='-'+index;seen[id]=true;return{id:id,name:name,query:query};
+        }).filter(Boolean).slice(0,30);
       }
       function normalizeState(){
         if(Number(S.version)===2){S.version=3;S.outbox=[];S.lastSyncAt='';S.lastSyncSummary='';S.modifiedAt=S.lastLoadedAt||'';}
-        if(Number(S.version)!==3){S=defaultState();return;}
+        if(Number(S.version)===3){S.version=4;S.offlineReserve=[];S.profileSignature='';S.serverVariants=[];}
+        if(Number(S.version)===4){S.version=5;var migrated={};S.offlineArchive=(Array.isArray(S.queue)?S.queue:[]).concat(Array.isArray(S.offlineReserve)?S.offlineReserve:[]).filter(function(item){if(!item||!item.id||migrated[item.id])return false;migrated[item.id]=true;return true;});}
+        if(Number(S.version)!==5){S=defaultState();return;}
         S.queue=Array.isArray(S.queue)?S.queue:[];
+        S.offlineArchive=Array.isArray(S.offlineArchive)?S.offlineArchive:[];
+        S.offlineReserve=Array.isArray(S.offlineReserve)?S.offlineReserve:[];
         S.dueReserve=Array.isArray(S.dueReserve)?S.dueReserve:[];
         S.newReserve=Array.isArray(S.newReserve)?S.newReserve:[];
         S.outbox=Array.isArray(S.outbox)?S.outbox:[];
@@ -478,7 +547,9 @@
         S.dueHasMore=S.dueHasMore!==false;
         S.newHasMore=S.newHasMore!==false;
         S.query=typeof S.query==='string'?S.query:'';
+        S.profileSignature=typeof S.profileSignature==='string'?S.profileSignature:'';
         S.serverParams=S.serverParams&&typeof S.serverParams==='object'?S.serverParams:{};
+        S.serverVariants=Array.isArray(S.serverVariants)?S.serverVariants:[];
         S.lastSyncAt=typeof S.lastSyncAt==='string'?S.lastSyncAt:'';
         S.lastSyncSummary=typeof S.lastSyncSummary==='string'?S.lastSyncSummary:'';
         S.modifiedAt=typeof S.modifiedAt==='string'?S.modifiedAt:'';
@@ -512,16 +583,16 @@
       }
       function scheduleExternalRefresh(){window.setTimeout(refreshExternalState,0);}
       function cacheElements(){
-        ['progress','progressCount','progressTrack','progressBar','reload','syncButton','syncBadge','settings','syncStrip','networkDot','networkCopy','pendingCopy','queueNameCopy','syncStripButton','setupScreen','setupForm','tokenInput','queryInput','connect','setupStatus','loadingScreen','loadingTitle','loadingCopy','reviewScreen','documentType','documentTitle','author','authorDot','siteName','dateDot','savedDate','openLink','summary','notePreview','location','readingTime','readingProgress','wordCount','documentTags','irKind','irDueCopy','decisionTitle','itemDueDays','itemPriority','itemPhase','activeDecisionLabel','activeDecisionHelp','decisionGrid','skip','emptyScreen','emptyTitle','emptyCopy','nextRound','emptyReload','emptySettings','errorScreen','errorCopy','retry','errorSettings','toasts','settingsDialog','closeSettings','queueName','settingsQuery','saveQuery','queryStatus','roundSize','reviewShare','dueDays','openMode','settingsToken','saveToken','settingsStatus','cacheSummary','openSync','clearQueue','disconnect','syncDialog','closeSync','closeSyncBottom','syncPendingCount','syncConflictCount','syncLastTime','syncExplanation','syncList','runSync','syncStatus'].forEach(function(id){E[id]=document.getElementById(id);});
+        ['progress','progressCount','progressTrack','progressBar','reload','syncButton','syncBadge','settings','syncStrip','networkDot','networkCopy','pendingCopy','queueNameCopy','syncStripButton','localFilterStrip','localFilterCopy','localMatchCopy','setupScreen','setupForm','tokenInput','queryInput','connect','setupStatus','loadingScreen','loadingTitle','loadingCopy','reviewScreen','documentType','documentTitle','author','authorDot','siteName','dateDot','savedDate','openLink','summary','notePreview','location','readingTime','readingProgress','wordCount','documentTags','irKind','irDueCopy','decisionTitle','itemDueDays','itemPriority','itemPhase','activeDecisionLabel','activeDecisionHelp','decisionGrid','skip','emptyScreen','emptyTitle','emptyCopy','nextRound','emptyReload','emptySettings','errorScreen','errorCopy','retry','errorSettings','toasts','settingsDialog','closeSettings','queueName','settingsQuery','localQuery','saveQuery','queryStatus','filterName','saveFilter','deleteFilter','effectiveFilter','cacheSize','roundSize','reviewShare','dueDays','openMode','laneCount','laneIndex','eInkMode','exportConfig','importConfig','importConfigFile','configStatus','settingsToken','saveToken','settingsStatus','cacheSummary','openSync','clearQueue','disconnect','syncDialog','closeSync','closeSyncBottom','syncPendingCount','syncConflictCount','syncLastTime','syncExplanation','syncList','runSync','syncStatus'].forEach(function(id){E[id]=document.getElementById(id);});
       }
       function screen(name){
         ['setupScreen','loadingScreen','reviewScreen','emptyScreen','errorScreen'].forEach(function(id){E[id].classList.toggle('active',id===name);});
         var localApp=!!token()||S.queue.length>0||S.lastLoadedAt||S.outbox.length>0,chrome=localApp&&name!=='setupScreen';
-        E.settings.hidden=!chrome;E.reload.hidden=!chrome;E.syncButton.hidden=!chrome;E.syncStrip.hidden=!chrome;E.progress.hidden=!(chrome&&S.sessionTotal>0);renderSyncChrome();
+        E.settings.hidden=!chrome;E.reload.hidden=!chrome;E.syncButton.hidden=!chrome;E.syncStrip.hidden=!chrome;E.localFilterStrip.hidden=!(chrome&&S.lastLoadedAt);E.progress.hidden=!(chrome&&S.sessionTotal>0);renderSyncChrome();renderLocalFilterChrome();
       }
       function setBusy(value){
         busy=value;
-        [E.connect,E.reload,E.syncButton,E.syncStripButton,E.runSync,E.nextRound,E.emptyReload,E.retry,E.saveQuery,E.saveToken,E.skip,E.itemDueDays,E.itemPriority,E.itemPhase].forEach(function(node){if(node)node.disabled=value;});
+        [E.connect,E.reload,E.syncButton,E.syncStripButton,E.runSync,E.nextRound,E.emptyReload,E.retry,E.saveQuery,E.saveFilter,E.deleteFilter,E.exportConfig,E.importConfig,E.saveToken,E.skip,E.itemDueDays,E.itemPriority,E.itemPhase].forEach(function(node){if(node)node.disabled=value;});
         Array.prototype.forEach.call(E.decisionGrid.querySelectorAll('button'),function(node){node.disabled=value;});
         if(!value&&externalRefreshPending)scheduleExternalRefresh();
       }
@@ -642,8 +713,11 @@
       }
       function request(path,options){return requestUrl(API+path,options);}
 
+      function canonicalizeQuery(source){
+        return String(source||'').trim().replace(/(^|[\s(])([A-Za-z_][A-Za-z0-9_]*(?:__[A-Za-z]+)?):[ \t]+(?=(?:"|[^\s()]))/g,'$1$2:');
+      }
       function tokenizeQuery(source){
-        var text=String(source||''),tokens=[],i=0;
+        var text=canonicalizeQuery(source),tokens=[],i=0;
         while(i<text.length){
           while(i<text.length&&/\s/.test(text[i]))i+=1;
           if(i>=text.length)break;
@@ -695,19 +769,28 @@
       }
       function parsePredicate(raw){
         var colon=raw.indexOf(':');
-        if(colon<1||colon===raw.length-1)throw new Error('„'+raw+'“ ist kein vollständiger Reader-Filterausdruck.');
-        var left=raw.slice(0,colon),value=raw.slice(colon+1),parts=left.split('__'),field=parts[0],op=parts[1]||'exact';
+        if(colon<1||colon===raw.length-1)throw new Error('„'+raw+'“ ist kein vollständiger Reader-Filterausdruck. Schreibe zum Beispiel category:epub.');
+        var left=raw.slice(0,colon),value=raw.slice(colon+1),parts=left.split('__'),field=parts[0],op=lower(parts[1]||'exact');
         if(parts.length>2)throw new Error('Der Operator in „'+raw+'“ ist ungültig.');
         if(value[0]==='"'&&value[value.length-1]==='"')value=value.slice(1,-1).replace(/\\"/g,'"');
-        var aliases={type:'category',in:'location',rssSource:'rss_source'};
-        field=aliases[field]||field;
+        var fieldKey=String(field).toLowerCase(),aliases={type:'category',in:'location',rsssource:'rss_source'};
+        field=aliases[fieldKey]||fieldKey;
         var allowedFields=['tag','domain','url','category','rss_source','author','location','title','saved_using','feed','seen','shared','words','progress','highlights','minutes','saved_count','has','saved','last_opened','published','last_status'];
         var allowedOps=['gt','lt','gte','lte','contains','exact','before','after','not'];
         if(allowedFields.indexOf(field)===-1)throw new Error('Das Filterfeld „'+field+'“ wird nicht erkannt.');
         if(allowedOps.indexOf(op)===-1)throw new Error('Der Filteroperator „__'+op+'“ wird nicht erkannt.');
+        var numericFields=['words','progress','highlights','minutes','saved_count'],dateFields=['saved','last_opened','published','last_status'],binaryFields=['feed','seen','shared'],textFields=['tag','domain','url','category','rss_source','author','location','title','saved_using'];
+        var validOperator=op==='not'||(numericFields.indexOf(field)!==-1&&['exact','gt','lt','gte','lte'].indexOf(op)!==-1)||(dateFields.indexOf(field)!==-1&&['exact','before','after'].indexOf(op)!==-1)||(textFields.indexOf(field)!==-1&&['exact','contains'].indexOf(op)!==-1)||(binaryFields.indexOf(field)!==-1&&op==='exact')||(field==='has'&&op==='exact');
+        if(!validOperator)throw new Error('„__'+op+'“ passt in der Reader-Syntax nicht zum Feld „'+field+'“.');
         var unavailable=['rss_source','saved_using','shared','highlights','saved_count'];
         if(unavailable.indexOf(field)!==-1)throw new Error('„'+field+'“ ist in Reader-Ansichten verfügbar, wird aber von der öffentlichen Dokument-API nicht mitgeliefert.');
         if(field==='has'&&String(value).toLowerCase()==='highlights')throw new Error('„has:highlights“ kann die öffentliche Dokument-API nicht zuverlässig auswerten.');
+        if(field==='category'&&['article','epub','email','pdf','tweet','rss','video','podcast','audiobook'].indexOf(lower(value))===-1)throw new Error('Unbekannte Reader-Kategorie „'+value+'“. Erlaubt sind article, epub, email, pdf, tweet, rss, video, podcast und audiobook.');
+        if(field==='location'&&['inbox','new','later','shortlist','archive','feed'].indexOf(lower(value))===-1)throw new Error('Unbekannter Reader-Ort „'+value+'“. Erlaubt sind inbox, later, shortlist, archive und feed.');
+        if(binaryFields.indexOf(field)!==-1)boolValue(value);
+        if(numericFields.indexOf(field)!==-1&&!isFinite(Number(value)))throw new Error('„'+field+'“ erwartet in der Reader-Syntax eine Zahl.');
+        if(dateFields.indexOf(field)!==-1&&!relativeDate(value))throw new Error('„'+field+'“ erwartet ein ISO-Datum oder einen relativen Wert wie "1 week ago".');
+        if(field==='has'&&['tags','notes','highlights'].indexOf(lower(value))===-1)throw new Error('Für has: sind tags, notes und highlights gültig; die App kann davon tags und notes auswerten.');
         return{type:'pred',field:field,op:op,value:value,raw:raw};
       }
       function tagNames(doc){
@@ -719,6 +802,21 @@
       function lower(value){return String(value===null||value===undefined?'':value).trim().toLowerCase();}
       function locationValue(value){var v=lower(value);return v==='inbox'?'new':v;}
       function domainOf(url){try{return new URL(String(url||'')).hostname.replace(/^www\./,'').toLowerCase();}catch(error){return'';}}
+      function stableHash(value){
+        var text=String(value||''),hash=2166136261;
+        for(var i=0;i<text.length;i+=1){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
+        return hash>>>0;
+      }
+      function isYouTubeDocument(doc){
+        var domain=domainOf(doc&&doc.source_url||doc&&doc.url);
+        return domain==='youtu.be'||domain==='youtube.com'||domain.endsWith('.youtube.com')||domain==='youtube-nocookie.com'||domain.endsWith('.youtube-nocookie.com');
+      }
+      function matchesDeviceProfile(doc){
+        if(settingsData.eInkMode&&(lower(doc&&doc.category)==='video'||isYouTubeDocument(doc)))return false;
+        return settingsData.laneCount<=1||stableHash(doc&&doc.id)%settingsData.laneCount===settingsData.laneIndex;
+      }
+      function currentProfileSignature(){return JSON.stringify({query:canonicalizeQuery(settingsData.query),eInkMode:!!settingsData.eInkMode,laneCount:settingsData.laneCount,laneIndex:settingsData.laneIndex,reviewShare:settingsData.reviewShare,cacheSize:settingsData.cacheSize});}
+      function applyDeviceMode(){if(document.body)document.body.classList.toggle('eink-mode',!!settingsData.eInkMode);}
       function isAndroidDevice(){
         var platform=navigator.userAgentData&&navigator.userAgentData.platform||'';
         return /android/i.test(String(platform))||/android/i.test(String(navigator.userAgent||''));
@@ -769,7 +867,7 @@
       }
       function relativeDate(value){
         var raw=lower(value),date=new Date();
-        if(/^\d{4}-\d{2}-\d{2}/.test(raw)){var absolute=new Date(raw);return isNaN(absolute.getTime())?null:absolute;}
+        if(/^\d{4}-\d{2}-\d{2}$/.test(raw)){var parts=raw.split('-').map(Number),absolute=new Date(parts[0],parts[1]-1,parts[2]);return isNaN(absolute.getTime())?null:absolute;}
         if(raw==='today'){date.setHours(0,0,0,0);return date;}
         if(raw==='yesterday'){date.setDate(date.getDate()-1);date.setHours(0,0,0,0);return date;}
         var match=raw.match(/^(\d+)\s+(day|days|week|weeks|month|months|year|years)\s+ago$/);
@@ -790,7 +888,8 @@
         if(kind==='date'){
           var ad=actual?new Date(actual):null,bd=relativeDate(expected);
           if(!ad||isNaN(ad.getTime())||!bd)return false;
-          if(op==='before'||op==='lt')return ad<bd;if(op==='after'||op==='gt')return ad>bd;return ad.getTime()===bd.getTime();
+          if(op==='before')return ad<bd;if(op==='after')return ad>bd;
+          return ad.getFullYear()===bd.getFullYear()&&ad.getMonth()===bd.getMonth()&&ad.getDate()===bd.getDate();
         }
         var av=lower(actual),ev=lower(expected);
         if(op==='contains')return av.indexOf(ev)!==-1;
@@ -821,8 +920,8 @@
         if(f==='minutes')return compare(readingMinutes(doc),op,v,'number');
         if(f==='has'){
           var hasValue=lower(v);
-          if(hasValue==='tags')return tagNames(doc).length>0;
-          if(hasValue==='notes')return !!String(doc.notes||'').trim();
+          var result=hasValue==='tags'?tagNames(doc).length>0:hasValue==='notes'?!!String(doc.notes||'').trim():false;
+          if(hasValue==='tags'||hasValue==='notes')return op==='not'?!result:result;
           throw new Error('Für has: werden nur tags und notes unterstützt.');
         }
         if(f==='saved')return compare(doc.saved_at,op,v,'date');
@@ -836,23 +935,61 @@
         if(node.type==='or')return evaluateQuery(doc,node.left)||evaluateQuery(doc,node.right);
         return evaluatePredicate(doc,node);
       }
+      function matchesLocalView(doc,query){
+        if(!matchesDeviceProfile(doc))return false;
+        var value=canonicalizeQuery(query===undefined?settingsData.localQuery:query);
+        return !value||evaluateQuery(doc,parseQuery(value));
+      }
+      function localMatches(query){
+        var value=canonicalizeQuery(query===undefined?settingsData.localQuery:query),tree=value?parseQuery(value):null;
+        return(S.offlineArchive||[]).filter(function(doc){return matchesDeviceProfile(doc)&&(!tree||evaluateQuery(doc,tree));});
+      }
+      function localFilterLabel(query){
+        var value=canonicalizeQuery(query||'');if(!value)return'Alle Dokumente';
+        var names={'category:video':'Videos','category__not:video':'Ohne Videos','category:epub OR category:pdf':'EPUB/PDF','in:inbox':'Inbox','in:later':'Later','in:inbox OR in:later':'Inbox + Later'};
+        var own=settingsData.savedFilters.find(function(item){return item.query===value;});return own?own.name:(names[value]||value);
+      }
+      function renderLocalFilterChrome(){
+        if(!E.localFilterCopy)return;var available=S.lastLoadedAt?localMatches().length:0;
+        E.localFilterCopy.textContent=localFilterLabel(settingsData.localQuery);E.localMatchCopy.textContent=available+' verfügbar · '+(S.offlineArchive||[]).length+' insgesamt';
+        Array.prototype.forEach.call(document.querySelectorAll('[data-local-query]'),function(button){button.classList.toggle('active',canonicalizeQuery(button.getAttribute('data-local-query')||'')===settingsData.localQuery);});
+      }
       function conjunctivePredicates(node){
         if(node.type==='pred')return[node];
         if(node.type==='and')return conjunctivePredicates(node.left).concat(conjunctivePredicates(node.right));
         return[];
       }
-      function deriveServerParams(tree){
-        var preds=conjunctivePredicates(tree),params={};
+      function dnfPredicates(node,limit){
+        if(node.type==='pred')return[[node]];
+        var left=dnfPredicates(node.left,limit),right=dnfPredicates(node.right,limit);
+        if(!left||!right)return null;
+        if(node.type==='or'){var joined=left.concat(right);return joined.length>limit?null:joined;}
+        var output=[];
+        for(var i=0;i<left.length;i+=1)for(var j=0;j<right.length;j+=1){output.push(left[i].concat(right[j]));if(output.length>limit)return null;}
+        return output;
+      }
+      function serverParamsForPredicates(preds){
+        var params={},invalid=false,tags=[];
         preds.forEach(function(pred){
           if(pred.op!=='exact')return;
           if(pred.field==='location'){
             var location=locationValue(pred.value);
-            if(['new','later','shortlist','archive','feed'].indexOf(location)!==-1)params.location=location;
-          }else if(pred.field==='category')params.category=lower(pred.value);
-          else if(pred.field==='feed'&&lower(pred.value)==='true')params.location='feed';
+            if(['new','later','shortlist','archive','feed'].indexOf(location)!==-1){if(params.location&&params.location!==location)invalid=true;params.location=location;}
+          }else if(pred.field==='category'){
+            var category=lower(pred.value);if(params.category&&params.category!==category)invalid=true;params.category=category;
+          }else if(pred.field==='feed'&&lower(pred.value)==='true'){
+            if(params.location&&params.location!=='feed')invalid=true;params.location='feed';
+          }else if(pred.field==='tag'&&tags.indexOf(lower(pred.value))===-1)tags.push(lower(pred.value));
         });
-        return params;
+        if(tags.length)params.tags=tags.slice(0,4);
+        return invalid?null:params;
       }
+      function deriveServerVariants(tree){
+        var branches=dnfPredicates(tree,24)||[conjunctivePredicates(tree)],seen={},variants=[];
+        branches.forEach(function(preds){var params=serverParamsForPredicates(preds);if(!params)return;var key=JSON.stringify(params);if(!seen[key]){seen[key]=true;variants.push(params);}});
+        return variants.length?variants:[{}];
+      }
+      function deriveServerParams(tree){return deriveServerVariants(tree)[0]||{};}
       function statusTags(doc){return tagNames(doc).filter(function(tag){return IR_NAMES.indexOf(lower(tag))!==-1;});}
       function hasIrStatus(doc){return statusTags(doc).length>0;}
       function validIsoDate(value){return /^\d{4}-\d{2}-\d{2}$/.test(String(value||''))&&!isNaN(new Date(String(value)+'T12:00:00').getTime());}
@@ -896,46 +1033,53 @@
         if(Array.isArray(value))value.forEach(function(item){params.append(key,item);});
         else if(value!==undefined&&value!==null&&value!=='')params.append(key,value);
       }
-      async function fetchPage(kind,cursor){
+      async function fetchPage(kind,cursor,serverParams){
         var params=new URLSearchParams();
         appendQueryParam(params,'limit','100');
-        Object.keys(S.serverParams||{}).forEach(function(key){
-          if(key==='tags')appendQueryParam(params,'tag',S.serverParams[key]);else appendQueryParam(params,key,S.serverParams[key]);
+        Object.keys(serverParams||{}).forEach(function(key){
+          if(key==='tags')appendQueryParam(params,'tag',serverParams[key]);else appendQueryParam(params,key,serverParams[key]);
         });
-        if(kind==='due')params.append('tag','ir-active');
+        if(kind==='due'&&!(serverParams&&serverParams.tags||[]).some(function(tag){return lower(tag)==='ir-active';}))params.append('tag','ir-active');
         if(cursor)params.append('pageCursor',cursor);
         return request('/list/?'+params.toString());
       }
       function addUnique(pool,doc){
-        var exists=S.queue.concat(S.dueReserve,S.newReserve,S.outbox||[]).some(function(item){return item.id===doc.id;});
+        var exists=S.queue.concat(S.offlineArchive||[],S.offlineReserve||[],S.dueReserve,S.newReserve,S.outbox||[]).some(function(item){return item.id===doc.id;});
         if(!exists)pool.push(doc);
       }
       async function fillPool(kind,target,tree,maxPages){
         var pool=kind==='due'?S.dueReserve:S.newReserve;
-        var cursorKey=kind==='due'?'dueCursor':'newCursor',moreKey=kind==='due'?'dueHasMore':'newHasMore';
-        var page=0,scanned=0,today=isoDateWithOffset(0);
-        while(pool.length<target&&S[moreKey]&&page<maxPages){
-          page+=1;
-          E.loadingCopy.textContent=(kind==='due'?'Fällige Wiedervorlagen':'Neue Kandidaten')+' werden gesucht · Seite '+page+(scanned?' · '+scanned+' geprüft':'')+' …';
-          var data=await fetchPage(kind,S[cursorKey]),results=(data&&data.results)||[];
-          scanned+=results.length;
-          results.forEach(function(raw){
-            if(!raw||!raw.id||raw.parent_id)return;
-            var doc=cleanDocument(raw);
-            if(!evaluateQuery(doc,tree))return;
-            if(kind==='new'){
-              if(hasIrStatus(doc))return;
-              doc._irKind='new';addUnique(pool,doc);return;
-            }
-            if(statusTags(doc).map(lower).indexOf('ir-active')===-1)return;
-            var meta=irMetadata(doc);
-            if(meta.due&&meta.due>today)return;
-            doc._irKind='due';doc._irDue=meta.due;doc._irPriority=meta.priority;doc._irPhase=meta.phase;doc._irIssues=meta.issues;
-            addUnique(pool,doc);
-          });
-          S[cursorKey]=data&&data.nextPageCursor?data.nextPageCursor:null;
-          S[moreKey]=!!S[cursorKey];
+        var variants=S.serverVariants&&S.serverVariants.length?S.serverVariants:[S.serverParams||{}];
+        var streams=variants.map(function(params){return{params:params,cursor:null,hasMore:true,pages:0};});
+        var scanned=0,today=isoDateWithOffset(0),round=0,canContinue=true;
+        while(canContinue&&(pool.length<target||round===0)){
+          canContinue=false;
+          for(var streamIndex=0;streamIndex<streams.length;streamIndex+=1){
+            var stream=streams[streamIndex];if(!stream.hasMore||stream.pages>=maxPages)continue;
+            if(round>0&&pool.length>=target)break;
+            canContinue=true;stream.pages+=1;
+            E.loadingCopy.textContent=(kind==='due'?'Fällige Wiedervorlagen':'Neue Kandidaten')+' werden gesucht · Filterzweig '+(streamIndex+1)+'/'+streams.length+' · '+scanned+' geprüft …';
+            var data=await fetchPage(kind,stream.cursor,stream.params),results=(data&&data.results)||[];
+            scanned+=results.length;
+            results.forEach(function(raw){
+              if(!raw||!raw.id||raw.parent_id)return;
+              var doc=cleanDocument(raw);
+              if(!matchesDeviceProfile(doc)||!evaluateQuery(doc,tree))return;
+              if(kind==='new'){
+                if(hasIrStatus(doc))return;
+                doc._irKind='new';addUnique(pool,doc);return;
+              }
+              if(statusTags(doc).map(lower).indexOf('ir-active')===-1)return;
+              var meta=irMetadata(doc);
+              if(meta.due&&meta.due>today)return;
+              doc._irKind='due';doc._irDue=meta.due;doc._irPriority=meta.priority;doc._irPhase=meta.phase;doc._irIssues=meta.issues;
+              addUnique(pool,doc);
+            });
+            stream.cursor=data&&data.nextPageCursor?data.nextPageCursor:null;stream.hasMore=!!stream.cursor;
+          }
+          round+=1;
         }
+        if(kind==='due')S.dueHasMore=streams.some(function(stream){return stream.hasMore&&stream.pages<maxPages;});else S.newHasMore=streams.some(function(stream){return stream.hasMore&&stream.pages<maxPages;});
         if(kind==='due')pool.sort(function(a,b){
           var ad=a._irDue||'0000-00-00',bd=b._irDue||'0000-00-00';
           return ad===bd?(Number(b._irPriority)||3)-(Number(a._irPriority)||3):ad.localeCompare(bd);
@@ -955,37 +1099,49 @@
         if(busy)return;
         var blocked=false,loadedDue=0,loadedNew=0;
         setBusy(true);screen('loadingScreen');
-        E.loadingTitle.textContent='Offline-Queue wird zusammengestellt';
+        E.loadingTitle.textContent='Offline-Vorrat wird zusammengestellt';
         try{
           await stateTransaction(async function(){
             if(S.outbox.length){blocked=true;return;}
             var previous=clone(S);
             try{
-              var query=String(settingsData.query||'').trim(),tree=parseQuery(query);
-              if(reset||S.query!==query){
-                var freshState=defaultState();freshState.lastSyncAt=previous.lastSyncAt;freshState.lastSyncSummary=previous.lastSyncSummary;S=freshState;S.query=query;S.serverParams=deriveServerParams(tree);
+              var query=canonicalizeQuery(settingsData.query),tree=parseQuery(query),profileSignature=currentProfileSignature();
+              if(reset||S.query!==query||S.profileSignature!==profileSignature){
+                var freshState=defaultState();freshState.lastSyncAt=previous.lastSyncAt;freshState.lastSyncSummary=previous.lastSyncSummary;S=freshState;S.query=query;S.profileSignature=profileSignature;S.serverVariants=deriveServerVariants(tree);S.serverParams=S.serverVariants[0]||{};
               }
-              var target=settingsData.roundSize,dueTarget=Math.round(target*settingsData.reviewShare/100),newTarget=target-dueTarget;
-              await fillPool('due',dueTarget,tree,4);
-              await fillPool('new',newTarget,tree,2);
+              var target=settingsData.cacheSize,dueTarget=Math.round(target*settingsData.reviewShare/100),newTarget=target-dueTarget;
+              await fillPool('due',dueTarget,tree,1000);
+              await fillPool('new',newTarget,tree,1000);
               var dueCount=Math.min(dueTarget,S.dueReserve.length),newCount=Math.min(newTarget,S.newReserve.length);
               var missing=target-dueCount-newCount;
               if(missing>0&&S.dueReserve.length-dueCount>0){var extraDue=Math.min(missing,S.dueReserve.length-dueCount);dueCount+=extraDue;missing-=extraDue;}
               if(missing>0&&S.newReserve.length-newCount>0){var extraNew=Math.min(missing,S.newReserve.length-newCount);newCount+=extraNew;missing-=extraNew;}
-              if(missing>0&&S.newHasMore){await fillPool('new',newCount+missing,tree,2);newCount=Math.min(newCount+missing,S.newReserve.length);missing=target-dueCount-newCount;}
-              if(missing>0&&S.dueHasMore){await fillPool('due',dueCount+missing,tree,4);dueCount=Math.min(dueCount+missing,S.dueReserve.length);}
+              if(missing>0&&S.newHasMore){await fillPool('new',newCount+missing,tree,1000);newCount=Math.min(newCount+missing,S.newReserve.length);missing=target-dueCount-newCount;}
+              if(missing>0&&S.dueHasMore){await fillPool('due',dueCount+missing,tree,1000);dueCount=Math.min(dueCount+missing,S.dueReserve.length);}
               var dueItems=S.dueReserve.splice(0,dueCount),newItems=S.newReserve.splice(0,Math.min(newCount,target-dueItems.length));
-              loadedDue=dueItems.length;loadedNew=newItems.length;S.queue=mixQueue(dueItems,newItems);S.sessionTotal=S.queue.length;S.deferred=0;S.lastLoadedAt=new Date().toISOString();await saveState();
+              var allItems=mixQueue(dueItems,newItems);loadedDue=dueItems.length;loadedNew=newItems.length;S.offlineArchive=allItems;S.queue=localMatches().slice(0,settingsData.roundSize);S.offlineReserve=[];S.dueReserve=[];S.newReserve=[];S.sessionTotal=S.queue.length;S.deferred=0;S.lastLoadedAt=new Date().toISOString();await saveState();
             }catch(error){S=previous;await saveState();throw error;}
           });
           render();
           if(blocked){openSyncDialog();toast('Vor einer neuen Queue müssen die lokalen Entscheidungen erst abgeglichen oder bewusst verworfen werden.','info');return;}
-          if(S.queue.length)toast('Offline-Queue gespeichert: '+loadedDue+' fällig · '+loadedNew+' neu.','info');
+          if(S.queue.length)toast('Offline-Vorrat gespeichert: '+(loadedDue+loadedNew)+' Dokumente · erste Teilrunde '+S.queue.length+'.','info');
         }catch(error){render();toast((error&&error.message?error.message:'Die Reader-Auswahl konnte nicht geladen werden.')+' Die vorhandene Queue bleibt erhalten.','error');}
         finally{setBusy(false);}
       }
-      function loadFresh(){return loadRound(true);}
-      function nextRound(){return S.outbox.length?openSyncDialog():loadFresh();}
+      function loadFresh(){
+        if(!S.outbox.length&&(S.offlineArchive.length||S.queue.length)&&!window.confirm('Den noch vorhandenen Offline-Vorrat verwerfen und neu aus Readwise laden?'))return;
+        return loadRound(true);
+      }
+      async function activateNextLocalRound(){
+        if(busy||!S.offlineArchive.length)return;
+        setBusy(true);
+        try{
+          await stateTransaction(async function(){S.queue=localMatches().slice(0,settingsData.roundSize);S.sessionTotal=S.queue.length;S.deferred=0;await saveState();});
+          render();window.scrollTo({top:0,behavior:'auto'});toast('Lokale Teilrunde geöffnet · '+localMatches().length+' passende Dokumente im Vorrat.','info');
+        }catch(error){render();toast(error&&error.message?error.message:'Die nächste lokale Teilrunde konnte nicht geöffnet werden.','error');}
+        finally{setBusy(false);}
+      }
+      function nextRound(){return localMatches().length?activateNextLocalRound():S.offlineArchive.length?openSettings():S.outbox.length?openSyncDialog():loadFresh();}
       async function fetchDocument(id){
         var data=await request('/list/?id='+encodeURIComponent(id)+'&limit=1');
         var doc=data&&data.results&&data.results[0];
@@ -1120,7 +1276,7 @@
             var index=S.queue.findIndex(function(candidate){return candidate.id===selectedId;});
             if(index<0)return;
             var latestItem=S.queue[index],operation=createPendingOperation(latestItem,status,plan),before=clone(S);
-            S.outbox.push(operation);S.queue.splice(index,1);
+            S.outbox.push(operation);S.queue.splice(index,1);S.offlineArchive=S.offlineArchive.filter(function(candidate){return candidate.id!==selectedId;});
             try{await saveState();stored=true;}catch(storageError){S=before;throw storageError;}
           });
           render();window.scrollTo({top:0,behavior:'auto'});
@@ -1214,9 +1370,10 @@
       function render(){
         renderProgress();cacheSummary();renderSyncChrome();
         if(!S.queue.length){
-          E.emptyTitle.textContent=S.sessionTotal?'Runde abgeschlossen.':'Keine passende Offline-Queue geladen.';
-          E.emptyCopy.textContent=S.outbox.length?'Alle Entscheidungen dieser Queue sind lokal gespeichert. '+S.outbox.length+' Änderung'+(S.outbox.length===1?' wartet':'en warten')+' noch auf den Abgleich mit Readwise.':'Du kannst eine neue, auf diesem Gerät gespeicherte Queue mit bis zu '+settingsData.roundSize+' Dokumenten aus „'+settingsData.query+'“ laden. Falls der Browser „Offline“ meldet, versucht die App die Readwise-Verbindung trotzdem.';
-          E.nextRound.hidden=false;E.emptyReload.hidden=true;E.nextRound.textContent=S.outbox.length?'Jetzt '+S.outbox.length+' Änderung'+(S.outbox.length===1?'':'en')+' abgleichen':'Neue Offline-Queue laden';
+          var available=localMatches().length;
+          E.emptyTitle.textContent=available?'Teilrunde abgeschlossen.':S.offlineArchive.length?'Keine Treffer in dieser lokalen Ansicht.':S.sessionTotal?'Offline-Vorrat abgeschlossen.':'Keine passende Offline-Queue geladen.';
+          E.emptyCopy.textContent=available?available+' passende Dokumente liegen noch im lokalen Master-Vorrat. '+S.outbox.length+' Entscheidung'+(S.outbox.length===1?' wartet':'en warten')+' auf den späteren Readwise-Abgleich.':S.offlineArchive.length?'Im Master-Vorrat liegen noch '+S.offlineArchive.length+' Dokumente. Wähle einen anderen lokalen Filter – dafür ist keine Verbindung nötig.':S.outbox.length?'Der gesamte Offline-Vorrat ist bearbeitet. '+S.outbox.length+' Änderung'+(S.outbox.length===1?' wartet':'en warten')+' noch auf den Abgleich mit Readwise.':'Du kannst einen neuen Offline-Vorrat mit bis zu '+settingsData.cacheSize+' Dokumenten aus „'+settingsData.query+'“ laden. Angezeigt werden jeweils nur '+settingsData.roundSize+' Dokumente pro Teilrunde.';
+          E.nextRound.hidden=false;E.emptyReload.hidden=true;E.nextRound.textContent=available?'Nächste '+Math.min(settingsData.roundSize,available)+' passende':S.offlineArchive.length?'Lokalen Filter ändern':S.outbox.length?'Jetzt '+S.outbox.length+' Änderung'+(S.outbox.length===1?'':'en')+' abgleichen':'Neuen Offline-Vorrat laden';
           screen('emptyScreen');document.title=(S.sessionTotal?'Runde abgeschlossen':'Offline-Queue')+' · IR Inbox';return;
         }
         var item=S.queue[0],site=item.site_name||item.source||domainOf(item.source_url)||'Reader';
@@ -1240,27 +1397,86 @@
       function showError(message){E.errorCopy.textContent=message;screen('errorScreen');}
       function cacheSummary(){
         if(!S.lastLoadedAt){E.cacheSummary.textContent=S.outbox.length?S.outbox.length+' lokale Änderungen warten auf den Abgleich.':'Kein geladener Stand.';return;}
-        var date;try{date=new Intl.DateTimeFormat('de-DE',{dateStyle:'medium',timeStyle:'short'}).format(new Date(S.lastLoadedAt));}catch(error){date=S.lastLoadedAt;}
-        E.cacheSummary.textContent=S.queue.length+' offen · '+S.outbox.length+' noch nicht synchronisiert · Filter-Snapshot „'+(S.query||settingsData.query)+'“ · geladen '+date;
+        var date,profile={};try{date=new Intl.DateTimeFormat('de-DE',{dateStyle:'medium',timeStyle:'short'}).format(new Date(S.lastLoadedAt));}catch(error){date=S.lastLoadedAt;}try{profile=JSON.parse(S.profileSignature||'{}');}catch(error){profile={};}
+        var profileCopy=profile.eInkMode?' · E‑Ink-Ausschluss aktiv':'';if(Number(profile.laneCount)>1)profileCopy+=' · Spur '+(Number(profile.laneIndex)+1)+'/'+profile.laneCount;
+        E.cacheSummary.textContent=S.offlineArchive.length+' im Master-Vorrat · '+localMatches().length+' passen zur lokalen Ansicht · '+S.queue.length+' in dieser Teilrunde · '+S.outbox.length+' noch nicht synchronisiert · Download-Filter „'+(S.query||settingsData.query)+'“'+profileCopy+' · geladen '+date;
       }
       async function connect(event){
         event.preventDefault();if(busy)return;
-        var value=E.tokenInput.value.trim(),query=E.queryInput.value.trim();
+        var value=E.tokenInput.value.trim(),query=canonicalizeQuery(E.queryInput.value);
         if(!value){E.setupStatus.textContent='Bitte füge deinen Readwise-Token ein.';E.tokenInput.focus();return;}
         try{parseQuery(query);}catch(error){E.setupStatus.textContent=error.message;E.queryInput.focus();return;}
-        E.setupStatus.textContent='';setToken(value);settingsData.query=query;saveSettings();setBusy(true);E.connect.textContent='Token wird geprüft …';
-        try{await requestUrl(AUTH_API);E.connect.textContent='Verbinden & Offline-Queue laden';setBusy(false);await loadFresh();}
-        catch(error){localStorage.removeItem(TOKEN_KEY);E.setupStatus.textContent=error&&error.message?error.message:'Der Token konnte nicht geprüft werden.';E.connect.textContent='Verbinden & Offline-Queue laden';setBusy(false);screen('setupScreen');E.tokenInput.focus();}
+        E.queryInput.value=query;E.setupStatus.textContent='';setToken(value);settingsData.query=query;saveSettings();setBusy(true);E.connect.textContent='Token wird geprüft …';
+        try{await requestUrl(AUTH_API);E.connect.textContent='Verbinden & Offline-Vorrat laden';setBusy(false);await loadFresh();}
+        catch(error){localStorage.removeItem(TOKEN_KEY);E.setupStatus.textContent=error&&error.message?error.message:'Der Token konnte nicht geprüft werden.';E.connect.textContent='Verbinden & Offline-Vorrat laden';setBusy(false);screen('setupScreen');E.tokenInput.focus();}
+      }
+      function renderSavedFilters(){
+        Array.prototype.forEach.call(document.querySelectorAll('[data-local-saved-filter-buttons]'),function(container){
+          container.innerHTML='';
+          if(!settingsData.savedFilters.length){var empty=document.createElement('span');empty.className='saved-filter-empty';empty.textContent='Noch keine eigenen Filter gespeichert.';container.appendChild(empty);return;}
+          settingsData.savedFilters.forEach(function(item){var button=document.createElement('button');button.type='button';button.className='preset';button.setAttribute('data-saved-filter-id',item.id);button.textContent=item.name;container.appendChild(button);});
+        });
+      }
+      function updateLaneOptions(selected){
+        var count=clampInt(E.laneCount.value,1,4,settingsData.laneCount),wanted=clampInt(selected,0,count-1,0);E.laneIndex.innerHTML='';
+        for(var index=0;index<count;index+=1){var option=document.createElement('option');option.value=String(index);option.textContent='Spur '+(index+1)+' von '+count;E.laneIndex.appendChild(option);}E.laneIndex.value=String(wanted);E.laneIndex.disabled=count===1;
+      }
+      function renderEffectiveFilter(){
+        if(!E.effectiveFilter)return;var additions=[];
+        if(E.eInkMode.checked)additions.push('E‑Ink: keine Videos oder YouTube-Quellen');
+        var count=Number(E.laneCount.value)||1,index=Number(E.laneIndex.value)||0;if(count>1)additions.push('Geräte-Spur '+(index+1)+' von '+count);
+        E.effectiveFilter.innerHTML='<strong>Effektiver Download:</strong> '+(additions.length?'Download-Filter plus '+additions.join(' plus ')+'.':'Der Download-Filter gilt ohne zusätzliche Geräte-Regel.');
       }
       function openSettings(){
-        E.queueName.value=settingsData.queueName;E.settingsQuery.value=settingsData.query;E.roundSize.value=String(settingsData.roundSize);E.reviewShare.value=String(settingsData.reviewShare);E.dueDays.value=String(settingsData.dueDays);E.openMode.value=settingsData.openMode;E.settingsToken.value=token();
-        E.queryStatus.textContent='';E.settingsStatus.textContent='';E.settingsDialog.showModal();
+        selectedSavedFilterId='';E.filterName.value='';E.deleteFilter.hidden=true;
+        E.queueName.value=settingsData.queueName;E.settingsQuery.value=settingsData.query;E.localQuery.value=settingsData.localQuery;E.cacheSize.value=String(settingsData.cacheSize);E.roundSize.value=String(settingsData.roundSize);E.reviewShare.value=String(settingsData.reviewShare);E.dueDays.value=String(settingsData.dueDays);E.openMode.value=settingsData.openMode;E.laneCount.value=String(settingsData.laneCount);updateLaneOptions(settingsData.laneIndex);E.eInkMode.checked=settingsData.eInkMode;E.settingsToken.value=token();
+        renderSavedFilters();renderEffectiveFilter();E.queryStatus.textContent='';E.configStatus.textContent='';E.settingsStatus.textContent='';if(!E.settingsDialog.open)E.settingsDialog.showModal();
       }
       function closeSettings(){E.settingsDialog.close();}
       async function applyQuery(){
-        var query=E.settingsQuery.value.trim(),size=clampInt(E.roundSize.value,5,50,settingsData.roundSize);
+        var query=canonicalizeQuery(E.settingsQuery.value),localQuery=canonicalizeQuery(E.localQuery.value),size=clampInt(E.roundSize.value,5,50,settingsData.roundSize),cacheSize=clampInt(E.cacheSize.value,10,1000,settingsData.cacheSize);
         try{parseQuery(query);}catch(error){E.queryStatus.textContent=error.message;E.settingsQuery.focus();return;}
-        settingsData.queueName=E.queueName.value;settingsData.query=query;settingsData.roundSize=size;settingsData.reviewShare=Number(E.reviewShare.value);settingsData.dueDays=Number(E.dueDays.value);settingsData.openMode=E.openMode.value;saveSettings();closeSettings();render();toast('Einstellungen gespeichert. Filter und Mischung gelten für die nächste neu geladene Queue.','success');
+        try{if(localQuery)parseQuery(localQuery);}catch(error){E.queryStatus.textContent=error.message;E.localQuery.focus();return;}
+        settingsData.queueName=E.queueName.value;settingsData.query=query;settingsData.localQuery=localQuery;settingsData.roundSize=size;settingsData.cacheSize=Math.max(size,cacheSize);settingsData.reviewShare=Number(E.reviewShare.value);settingsData.dueDays=Number(E.dueDays.value);settingsData.openMode=E.openMode.value;settingsData.laneCount=Number(E.laneCount.value);settingsData.laneIndex=Number(E.laneIndex.value);settingsData.eInkMode=E.eInkMode.checked;saveSettings();E.settingsQuery.value=settingsData.query;E.localQuery.value=settingsData.localQuery;applyDeviceMode();
+        if(S.offlineArchive.length)await stateTransaction(async function(){S.queue=localMatches().slice(0,settingsData.roundSize);S.sessionTotal=S.queue.length;S.deferred=0;await saveState();});
+        closeSettings();render();toast('Lokale Ansicht sofort angewandt. Download-Filter und Vorratsgröße gelten beim nächsten Nachladen.','success');
+      }
+      async function chooseSavedFilter(event){
+        var button=event.target.closest('[data-saved-filter-id]');if(!button)return;var item=settingsData.savedFilters.find(function(candidate){return candidate.id===button.getAttribute('data-saved-filter-id');});if(!item)return;
+        if(button.closest('dialog')){E.localQuery.value=item.query;selectedSavedFilterId=item.id;E.filterName.value=item.name;E.deleteFilter.hidden=false;E.queryStatus.textContent='Lokaler Filter „'+item.name+'“ ausgewählt.';return;}
+        if(busy)return;settingsData.localQuery=item.query;saveSettings();setBusy(true);
+        try{await stateTransaction(async function(){S.queue=localMatches().slice(0,settingsData.roundSize);S.sessionTotal=S.queue.length;S.deferred=0;await saveState();});render();window.scrollTo({top:0,behavior:'auto'});toast('Lokaler Filter „'+item.name+'“ angewandt · kein API-Aufruf.','success');}
+        catch(error){render();toast(error&&error.message?error.message:'Der lokale Filter konnte nicht angewandt werden.','error');}
+        finally{setBusy(false);}
+      }
+      function saveCurrentFilter(){
+        var name=String(E.filterName.value||'').replace(/[\r\n]+/g,' ').trim().slice(0,50),query=canonicalizeQuery(E.localQuery.value);if(!name){E.queryStatus.textContent='Bitte gib dem Filter einen Namen.';E.filterName.focus();return;}
+        try{if(query)parseQuery(query);}catch(error){E.queryStatus.textContent=error.message;E.localQuery.focus();return;}
+        var existing=settingsData.savedFilters.find(function(item){return item.id===selectedSavedFilterId;});
+        if(existing){existing.name=name;existing.query=query;}else{existing={id:'F'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),name:name,query:query};settingsData.savedFilters.push(existing);selectedSavedFilterId=existing.id;}
+        saveSettings();E.localQuery.value=query;E.deleteFilter.hidden=false;renderSavedFilters();E.queryStatus.textContent='Lokaler Filter „'+name+'“ auf diesem Gerät gespeichert.';
+      }
+      function deleteCurrentFilter(){
+        var item=settingsData.savedFilters.find(function(candidate){return candidate.id===selectedSavedFilterId;});if(!item)return;
+        if(!window.confirm('Den gespeicherten Filter „'+item.name+'“ von diesem Gerät löschen?'))return;
+        settingsData.savedFilters=settingsData.savedFilters.filter(function(candidate){return candidate.id!==selectedSavedFilterId;});selectedSavedFilterId='';E.filterName.value='';E.deleteFilter.hidden=true;saveSettings();renderSavedFilters();E.queryStatus.textContent='Gespeicherter Filter gelöscht. Der aktuelle Filtertext bleibt erhalten.';
+      }
+      function portableSettings(source){
+        var value=source||{};return{query:value.query,localQuery:value.localQuery,roundSize:value.roundSize,cacheSize:value.cacheSize,dueDays:value.dueDays,reviewShare:value.reviewShare,openMode:value.openMode,queueName:value.queueName,savedFilters:clone(value.savedFilters||[]),eInkMode:value.eInkMode,laneCount:value.laneCount,laneIndex:value.laneIndex};
+      }
+      function exportDeviceConfig(){
+        var payload={schema:CONFIG_SCHEMA,version:1,exportedAt:new Date().toISOString(),settings:portableSettings(settingsData)};
+        var blob=new Blob([JSON.stringify(payload,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='ir-inbox-device-config-'+isoDateWithOffset(0)+'.json';document.body.appendChild(link);link.click();link.remove();window.setTimeout(function(){URL.revokeObjectURL(url);},1000);E.configStatus.textContent='Konfiguration ohne Token und Offline-Daten exportiert.';
+      }
+      function requestConfigImport(){E.importConfigFile.value='';E.importConfigFile.click();}
+      async function importDeviceConfig(event){
+        var file=event.target.files&&event.target.files[0];if(!file)return;var previous=clone(settingsData);
+        try{
+          var payload=JSON.parse(await file.text());if(!payload||payload.schema!==CONFIG_SCHEMA||Number(payload.version)!==1||!payload.settings)throw new Error('Die Datei ist keine unterstützte IR-Inbox-Gerätekonfiguration.');
+          settingsData=Object.assign(clone(DEFAULT_SETTINGS),portableSettings(payload.settings));normalizeSettings();parseQuery(settingsData.query);saveSettings();applyDeviceMode();
+          if(S.offlineArchive.length)await stateTransaction(async function(){S.queue=localMatches().slice(0,settingsData.roundSize);S.sessionTotal=S.queue.length;S.deferred=0;await saveState();});
+          E.queryInput.value=settingsData.query;openSettings();E.configStatus.textContent='Konfiguration importiert. Lokale Ansicht angewandt; Access Token, Offline-Vorrat und Ausgang wurden nicht verändert.';toast('Gerätekonfiguration importiert.','success');
+        }catch(error){settingsData=previous;normalizeSettings();E.configStatus.textContent=error&&error.message?error.message:'Die Konfiguration konnte nicht importiert werden.';}
       }
       async function saveToken(){
         if(busy)return;var value=E.settingsToken.value.trim(),old=token();
@@ -1271,11 +1487,11 @@
         finally{setBusy(false);}
       }
       async function clearQueue(){
-        if(!window.confirm('Die noch offene Queue auf diesem Gerät verwerfen? Bereits getroffene, noch nicht synchronisierte Entscheidungen bleiben erhalten.'))return;
+        if(!window.confirm('Die aktuelle Teilrunde und den restlichen Offline-Vorrat auf diesem Gerät verwerfen? Bereits getroffene, noch nicht synchronisierte Entscheidungen bleiben erhalten.'))return;
         setBusy(true);
         try{
           await stateTransaction(async function(){
-            S.queue=[];S.dueReserve=[];S.newReserve=[];S.sessionTotal=0;S.deferred=0;S.lastLoadedAt='';S.dueCursor=null;S.newCursor=null;S.dueHasMore=true;S.newHasMore=true;S.query='';S.serverParams={};await saveState();
+            S.queue=[];S.offlineArchive=[];S.offlineReserve=[];S.dueReserve=[];S.newReserve=[];S.sessionTotal=0;S.deferred=0;S.lastLoadedAt='';S.dueCursor=null;S.newCursor=null;S.dueHasMore=true;S.newHasMore=true;S.query='';S.profileSignature='';S.serverParams={};S.serverVariants=[];await saveState();
           });
           cacheSummary();closeSettings();render();toast('Die offene Queue wurde verworfen. Lokale Entscheidungen bleiben erhalten.','info');
         }catch(error){render();toast(error&&error.message?error.message:'Die Queue konnte nicht verworfen werden.','error');}
@@ -1289,7 +1505,15 @@
       function presetClick(event){
         var button=event.target.closest('[data-query]');if(!button)return;
         var container=button.closest('form,dialog'),target=container&&container.tagName.toLowerCase()==='dialog'?E.settingsQuery:E.queryInput;
-        target.value=button.getAttribute('data-query');target.focus();
+        target.value=button.getAttribute('data-query');if(container&&container.tagName.toLowerCase()==='dialog'){selectedSavedFilterId='';E.filterName.value='';E.deleteFilter.hidden=true;E.queryStatus.textContent='';}target.focus();
+      }
+      async function localPresetClick(event){
+        var button=event.target.closest('[data-local-query]');if(!button||busy)return;var query=canonicalizeQuery(button.getAttribute('data-local-query')||'');
+        if(button.closest('dialog')){E.localQuery.value=query;selectedSavedFilterId='';E.filterName.value='';E.deleteFilter.hidden=true;E.queryStatus.textContent='';E.localQuery.focus();return;}
+        settingsData.localQuery=query;saveSettings();setBusy(true);
+        try{await stateTransaction(async function(){S.queue=localMatches().slice(0,settingsData.roundSize);S.sessionTotal=S.queue.length;S.deferred=0;await saveState();});render();window.scrollTo({top:0,behavior:'auto'});toast('Lokale Ansicht „'+localFilterLabel(query)+'“ angewandt · kein API-Aufruf.','success');}
+        catch(error){render();toast(error&&error.message?error.message:'Der lokale Filter konnte nicht angewandt werden.','error');}
+        finally{setBusy(false);}
       }
       function keydown(event){
         var target=event.target,tag=target&&target.tagName?target.tagName.toLowerCase():'';
@@ -1304,10 +1528,14 @@
         E.syncButton.addEventListener('click',openSyncDialog);E.syncStripButton.addEventListener('click',openSyncDialog);E.openSync.addEventListener('click',openSyncDialog);E.runSync.addEventListener('click',syncPendingChanges);E.closeSync.addEventListener('click',closeSyncDialog);E.closeSyncBottom.addEventListener('click',closeSyncDialog);
         E.syncList.addEventListener('click',function(event){var button=event.target.closest('[data-discard-operation]');if(button)discardPendingOperation(button.getAttribute('data-discard-operation'));});
         E.settings.addEventListener('click',openSettings);E.emptySettings.addEventListener('click',openSettings);E.errorSettings.addEventListener('click',openSettings);E.closeSettings.addEventListener('click',closeSettings);
-        E.saveQuery.addEventListener('click',applyQuery);E.saveToken.addEventListener('click',saveToken);E.clearQueue.addEventListener('click',clearQueue);E.disconnect.addEventListener('click',disconnect);E.skip.addEventListener('click',defer);
+        E.saveQuery.addEventListener('click',applyQuery);E.saveFilter.addEventListener('click',saveCurrentFilter);E.deleteFilter.addEventListener('click',deleteCurrentFilter);E.saveToken.addEventListener('click',saveToken);E.clearQueue.addEventListener('click',clearQueue);E.disconnect.addEventListener('click',disconnect);E.skip.addEventListener('click',defer);
+        E.laneCount.addEventListener('change',function(){updateLaneOptions(E.laneIndex.value);renderEffectiveFilter();});E.laneIndex.addEventListener('change',renderEffectiveFilter);E.eInkMode.addEventListener('change',renderEffectiveFilter);
+        E.exportConfig.addEventListener('click',exportDeviceConfig);E.importConfig.addEventListener('click',requestConfigImport);E.importConfigFile.addEventListener('change',importDeviceConfig);
         E.decisionGrid.addEventListener('click',function(event){var button=event.target.closest('[data-decision]');if(button)decide(button.getAttribute('data-decision'));});
         Array.prototype.forEach.call(document.querySelectorAll('[data-reveal]'),function(button){button.addEventListener('click',function(){reveal(button);});});
         Array.prototype.forEach.call(document.querySelectorAll('[data-presets]'),function(container){container.addEventListener('click',presetClick);});
+        Array.prototype.forEach.call(document.querySelectorAll('[data-local-presets]'),function(container){container.addEventListener('click',localPresetClick);});
+        Array.prototype.forEach.call(document.querySelectorAll('[data-local-saved-filter-buttons]'),function(container){container.addEventListener('click',chooseSavedFilter);});
         E.settingsDialog.addEventListener('click',function(event){if(event.target===E.settingsDialog)closeSettings();});
         E.syncDialog.addEventListener('click',function(event){if(event.target===E.syncDialog)closeSyncDialog();});
         E.openLink.addEventListener('click',refreshOpenLinkTarget);
@@ -1324,10 +1552,10 @@
         document.addEventListener('keydown',keydown);
       }
       async function init(){
-        normalizeSettings();cacheElements();bind();
+        normalizeSettings();applyDeviceMode();cacheElements();bind();renderSavedFilters();
         await stateTransaction(async function(){normalizeState();await saveState();});
         E.queryInput.value=settingsData.query;cacheSummary();renderSyncChrome();
-        if(S.queue.length){render();toast('Offline-Queue wiederhergestellt'+(S.outbox.length?' · '+S.outbox.length+' Änderungen warten auf Sync':'')+'.','info');}
+        if(S.offlineArchive.length){render();toast('Offline-Vorrat wiederhergestellt · '+S.offlineArchive.length+' Dokumente lokal · Ansicht „'+localFilterLabel(settingsData.localQuery)+'“'+(S.outbox.length?' · '+S.outbox.length+' Änderungen warten auf Sync':'')+'.','info');}
         else if(S.lastLoadedAt||S.outbox.length)render();
         else if(!token()){screen('setupScreen');setTimeout(function(){E.tokenInput.focus();},0);}
         else{
@@ -1337,11 +1565,12 @@
       }
 
       window.ReadwiseIRInboxCore={
-        tokenizeQuery:tokenizeQuery,parseQuery:parseQuery,evaluateQuery:evaluateQuery,deriveServerParams:deriveServerParams,
+        canonicalizeQuery:canonicalizeQuery,tokenizeQuery:tokenizeQuery,parseQuery:parseQuery,evaluateQuery:evaluateQuery,deriveServerParams:deriveServerParams,deriveServerVariants:deriveServerVariants,
         tagNames:tagNames,irMetadata:irMetadata,dueDescription:dueDescription,mixQueue:mixQueue,
         mergeIrBlock:mergeIrBlock,mergedTags:mergedTags,cleanDocument:cleanDocument,categoryLabel:categoryLabel,
         readerWebUrl:readerWebUrl,isReaderWebUrl:isReaderWebUrl,androidReaderIntent:androidReaderIntent,shouldUseReaderApp:shouldUseReaderApp,
-        irFamilySignature:irFamilySignature,createPendingOperation:createPendingOperation,baselineStillMatches:baselineStillMatches,targetAlreadyApplied:targetAlreadyApplied,dueDateForPlan:dueDateForPlan
+        irFamilySignature:irFamilySignature,createPendingOperation:createPendingOperation,baselineStillMatches:baselineStillMatches,targetAlreadyApplied:targetAlreadyApplied,dueDateForPlan:dueDateForPlan,
+        stableHash:stableHash,isYouTubeDocument:isYouTubeDocument,matchesDeviceProfile:matchesDeviceProfile,portableSettings:portableSettings
       };
       init();
       if('serviceWorker' in navigator&&/^https?:$/.test(window.location.protocol)){
